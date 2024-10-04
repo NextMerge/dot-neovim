@@ -198,22 +198,18 @@ vim.keymap.set('v', '<leader>p', '"_dP', { noremap = true, desc = "[P]aste over 
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
 
--- Unmap s and S
-vim.keymap.set({ 'n', 'x' }, 's', '<Nop>')
-vim.keymap.set({ 'n', 'x' }, 'S', '<cmd>silent! wall<CR>', { desc = '[S]ave all buffers' })
-vim.keymap.set({ 'n', 'x' }, '<C-s>', '<cmd>wall<CR>', { desc = '[S]ave all buffers' })
-
--- Shift + ; followed by lowercaseq is annoying on Dvorak
-vim.keymap.set('n', '<C-q>', ':q', { desc = 'Active prompt to [Q]uit current buffer' })
-
--- vim.keymap.set('n', '<C-y>', '<Nop>')
 vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = '[C]opy relative file path' })
 
 vim.keymap.set('n', 'qq', '<Nop>')
 
 vim.keymap.set('n', '<C-M-S-h>', vim.lsp.buf.hover, { silent = true, desc = 'LSP: [H]over Documentation' })
 vim.keymap.set('n', '<C-M-S-g>', vim.diagnostic.goto_next, { desc = 'Diagnostic: [G]o to next diagnostic' })
-vim.keymap.set('n', '<C-M-S-f>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
+vim.keymap.set('n', '<C-M-S-c>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
+vim.keymap.set('n', '<C-M-S-f>', vim.lsp.buf.signature_help, { desc = 'LSP: Show [F]unction Signature Help' })
+
+-- Swap : and z
+vim.api.nvim_set_keymap('n', 'z', ':', { noremap = true })
+vim.api.nvim_set_keymap('n', ':', 'z', { noremap = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -764,22 +760,6 @@ require('lazy').setup({
     },
     opts = {
       notify_on_error = false,
-      format_on_save = function(bufnr)
-        -- Disable "format_on_save lsp_fallback" for languages that don't
-        -- have a well standardized coding style. You can add additional
-        -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
-        local lsp_format_opt
-        if disable_filetypes[vim.bo[bufnr].filetype] then
-          lsp_format_opt = 'never'
-        else
-          lsp_format_opt = 'fallback'
-        end
-        return {
-          timeout_ms = 500,
-          lsp_format = lsp_format_opt,
-        }
-      end,
       formatters_by_ft = {
         lua = { 'stylua' },
         -- Conform can also run multiple formatters sequentially
@@ -1156,6 +1136,21 @@ require('lazy').setup({
       buffer_leader_key = 'm', -- Per Buffer Mappings
     },
   },
+  { -- Autosave
+    'okuuva/auto-save.nvim',
+    cmd = 'ASToggle', -- optional for lazy loading on command
+    event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
+    config = function()
+      require('auto-save').setup {}
+    end,
+  },
+  {
+    'ggandor/leap.nvim',
+    dependencies = { 'tpope/vim-repeat' },
+    config = function()
+      require('leap').add_default_mappings()
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
@@ -1177,6 +1172,6 @@ require('lazy').setup({
     },
   },
 })
-
+--
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
