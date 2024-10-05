@@ -157,6 +157,14 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+vim.diagnostic.config {
+  virtual_text = {
+    prefix = function(diagnostic)
+      return string.format('[%s] ', diagnostic.source)
+    end,
+  },
+}
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -165,7 +173,7 @@ vim.opt.scrolloff = 10
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+-- vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -203,13 +211,17 @@ vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = '[C]opy rel
 vim.keymap.set('n', 'qq', '<Nop>')
 
 vim.keymap.set('n', '<C-M-S-h>', vim.lsp.buf.hover, { silent = true, desc = 'LSP: [H]over Documentation' })
+vim.keymap.set('n', '<C-M-S-d>', vim.diagnostic.open_float, { desc = '[D]iagnostics: Hover' })
 vim.keymap.set('n', '<C-M-S-g>', vim.diagnostic.goto_next, { desc = 'Diagnostic: [G]o to next diagnostic' })
 vim.keymap.set('n', '<C-M-S-c>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
-vim.keymap.set('n', '<C-M-S-f>', vim.lsp.buf.signature_help, { desc = 'LSP: Show [F]unction Signature Help' })
 
 -- Swap : and z
 vim.api.nvim_set_keymap('n', 'z', ':', { noremap = true })
-vim.api.nvim_set_keymap('n', ':', 'z', { noremap = true })
+vim.api.nvim_set_keymap('n', '+', 'z', { noremap = true })
+
+vim.keymap.set('n', '<leader>cc', function()
+  require('treesitter-context').go_to_context(vim.v.count1)
+end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -410,6 +422,25 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = 'TelescopeResults',
+        callback = function(ctx)
+          vim.api.nvim_buf_call(ctx.buf, function()
+            vim.fn.matchadd('TelescopeParent', '\t\t.*$')
+            vim.api.nvim_set_hl(0, 'TelescopeParent', { link = 'Comment' })
+          end)
+        end,
+      })
+
+      local function filenameFirst(_, path)
+        local tail = vim.fs.basename(path)
+        local parent = vim.fs.dirname(path)
+        if parent == '.' then
+          return tail
+        end
+        return string.format('%s\t\t%s', tail, parent)
+      end
+
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
@@ -419,7 +450,29 @@ require('lazy').setup({
         --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
         --   },
         -- },
-        -- pickers = {}
+        pickers = {
+          find_files = {
+            path_display = filenameFirst,
+            previewer = false,
+            shorten_path = true,
+          },
+          git_files = {
+            path_display = filenameFirst,
+            previewer = false,
+            shorten_path = true,
+            show_untracked = true,
+          },
+          diagnostics = {
+            path_display = filenameFirst,
+            layout_strategy = 'center',
+            layout_config = {
+              width = 0.95,
+            },
+          },
+          oldfiles = {
+            path_display = filenameFirst,
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -445,11 +498,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sc', function()
-        builtin.git_files {
-          show_untracked = true,
-        }
-      end, { desc = '[S]earch [C]ode Files in Repo' })
+      vim.keymap.set('n', '<leader>sc', builtin.git_files, { desc = '[S]earch [C]ode Files in Repo' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>z', function()
@@ -991,6 +1040,13 @@ require('lazy').setup({
     --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
     --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
   },
+  { -- Sticky context on scroll
+    'nvim-treesitter/nvim-treesitter-context',
+    opts = {
+      max_lines = 10,
+      multiline_threshold = 3,
+    },
+  },
 
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
@@ -1134,6 +1190,7 @@ require('lazy').setup({
       show_icons = true,
       leader_key = ';', -- Recommended to be a single key
       buffer_leader_key = 'm', -- Per Buffer Mappings
+      index_keys = 'htnsmwvzaoeui1234567890',
     },
   },
   { -- Autosave
@@ -1141,7 +1198,9 @@ require('lazy').setup({
     cmd = 'ASToggle', -- optional for lazy loading on command
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
     config = function()
-      require('auto-save').setup {}
+      require('auto-save').setup {
+        debounce_delay = 2000,
+      }
     end,
   },
   {
@@ -1150,6 +1209,16 @@ require('lazy').setup({
     config = function()
       require('leap').add_default_mappings()
     end,
+  },
+  { -- Centers single buffer windows
+    'shortcuts/no-neck-pain.nvim',
+    version = '*',
+    opts = {
+      width = 127,
+      autocmds = {
+        enableOnVimEnter = true,
+      },
+    },
   },
 }, {
   ui = {
