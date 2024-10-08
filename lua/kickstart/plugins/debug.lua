@@ -23,6 +23,7 @@ return {
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+    'mxsdev/nvim-dap-vscode-js',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -95,6 +96,9 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'delve',
+        -- Due to a bug with the latest version of vscode-js-debug, need to lock to specific version
+        -- See: https://github.com/mxsdev/nvim-dap-vscode-js/issues/58#issuecomment-2213230558
+        'js@v1.76.1',
       },
     }
 
@@ -144,5 +148,46 @@ return {
         detached = vim.fn.has 'win32' == 0,
       },
     }
+
+    require('dap-vscode-js').setup {
+      debugger_path = vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter',
+      debugger_cmd = { 'js-debug-adapter' },
+      adapters = { 'pwa-chrome', 'pwa-node' },
+    }
+
+    local exts = {
+      'javascript',
+      'typescript',
+      'javascriptreact',
+      'typescriptreact',
+    }
+
+    for _, ext in ipairs(exts) do
+      dap.configurations[ext] = {
+        {
+          type = 'pwa-chrome',
+          request = 'launch',
+          name = 'Launch Chrome with "localhost"',
+          url = 'http://localhost:3000/',
+          webRoot = vim.fn.getcwd(),
+          -- protocol = 'inspector',
+          sourceMaps = true,
+          userDataDir = false,
+          skipFiles = { '<node_internals>/**', 'node_modules/**', '${workspaceFolder}/node_modules/**' },
+          resolveSourceMapLocations = {
+            '${workspaceFolder}/apps/**/**',
+            '${workspaceFolder}/**',
+            '!**/node_modules/**',
+          },
+        },
+        {
+          type = 'pwa-node',
+          request = 'attach',
+          name = 'Attach',
+          processId = require('dap.utils').pick_process,
+          cwd = '${workspaceFolder}',
+        },
+      }
+    end
   end,
 }
