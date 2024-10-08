@@ -198,8 +198,8 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set('n', 'J', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-vim.keymap.set('n', 'K', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+vim.keymap.set({ 'n', 'v' }, 'J', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
+vim.keymap.set({ 'n', 'v' }, 'K', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
 
 vim.keymap.set('v', '<leader>p', '"_dP', { noremap = true, desc = "[P]aste over highlighted text but don't overwrite the copy register" })
 
@@ -215,13 +215,17 @@ vim.keymap.set('n', '<C-M-S-d>', vim.diagnostic.open_float, { desc = '[D]iagnost
 vim.keymap.set('n', '<C-M-S-g>', vim.diagnostic.goto_next, { desc = 'Diagnostic: [G]o to next diagnostic' })
 vim.keymap.set('n', '<C-M-S-c>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
 
--- Swap : and z
+-- Make z behave like :, and + behave like z
 vim.api.nvim_set_keymap('n', 'z', ':', { noremap = true })
 vim.api.nvim_set_keymap('n', '+', 'z', { noremap = true })
 
 vim.keymap.set('n', '<leader>cc', function()
   require('treesitter-context').go_to_context(vim.v.count1)
 end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
+
+vim.keymap.set('n', '<leader>pv', function()
+  vim.cmd 'Ex'
+end, { silent = true, desc = '[P]roject [V]iew' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -454,13 +458,6 @@ require('lazy').setup({
           find_files = {
             path_display = filenameFirst,
             previewer = false,
-            shorten_path = true,
-          },
-          git_files = {
-            path_display = filenameFirst,
-            previewer = false,
-            shorten_path = true,
-            show_untracked = true,
           },
           diagnostics = {
             path_display = filenameFirst,
@@ -498,7 +495,20 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sc', builtin.git_files, { desc = '[S]earch [C]ode Files in Repo' })
+      vim.keymap.set('n', '<leader>sc', function()
+        builtin.find_files {
+          find_command = {
+            'rg',
+            '--no-ignore',
+            '--hidden',
+            '--files',
+            '-g',
+            '!**/node_modules/*',
+            '-g',
+            '!**/.git/*',
+          },
+        }
+      end, { desc = '[S]earch [C]ode Files in Repo' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>z', function()
@@ -1057,7 +1067,7 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  -- require 'kickstart.plugins.debug',
+  require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
@@ -1190,7 +1200,6 @@ require('lazy').setup({
       show_icons = true,
       leader_key = ';', -- Recommended to be a single key
       buffer_leader_key = 'm', -- Per Buffer Mappings
-      index_keys = 'htnsmwvzaoeui1234567890',
     },
   },
   { -- Autosave
