@@ -165,6 +165,13 @@ vim.diagnostic.config {
   },
 }
 
+-- Immediately commit sin
+local vscode = vim.g.vscode and require 'vscode' or nil
+
+if vscode then
+  vim.notify = vscode.notify
+end
+
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
@@ -198,8 +205,19 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set({ 'n', 'v' }, 'J', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-vim.keymap.set({ 'n', 'v' }, 'K', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+if not vscode then
+  vim.keymap.set({ 'n', 'v' }, 'J', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
+  vim.keymap.set({ 'n', 'v' }, 'K', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+else
+  vim.keymap.set('n', 'J', function()
+    vscode.call('editorScroll', { args = { to = 'down', by = 'wrappedLine', value = 32 } })
+    vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
+  end, { desc = 'Move down and center screen on cursor' })
+  vim.keymap.set('n', 'K', function()
+    vscode.call('editorScroll', { args = { to = 'up', by = 'wrappedLine', value = 32 } })
+    vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
+  end, { desc = 'Move up and center screen on cursor' })
+end
 
 vim.keymap.set('v', '<leader>p', '"_dP', { noremap = true, desc = "[P]aste over highlighted text but don't overwrite the copy register" })
 
@@ -208,16 +226,10 @@ vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
 
 vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = '[C]opy relative file path' })
 
-vim.keymap.set('n', 'qq', '<Nop>')
-
 vim.keymap.set('n', '<C-M-S-h>', vim.lsp.buf.hover, { silent = true, desc = 'LSP: [H]over Documentation' })
 vim.keymap.set('n', '<C-M-S-d>', vim.diagnostic.open_float, { desc = '[D]iagnostics: Hover' })
 vim.keymap.set('n', '<C-M-S-g>', vim.diagnostic.goto_next, { desc = 'Diagnostic: [G]o to next diagnostic' })
 vim.keymap.set('n', '<C-M-S-c>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
-
--- Make z behave like :, and + behave like z
-vim.api.nvim_set_keymap('n', 'z', ':', { noremap = true })
-vim.api.nvim_set_keymap('n', '+', 'z', { noremap = true })
 
 vim.keymap.set('n', '<leader>cc', function()
   require('treesitter-context').go_to_context(vim.v.count1)
@@ -226,6 +238,18 @@ end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
+
+if vscode then
+  vim.keymap.set('n', '<leader>sc', function()
+    vscode.action 'find-it-faster.findFiles'
+  end, { desc = '[S]earch [C]ode Files in Repo' })
+  vim.keymap.set('n', '<leader>sg', function()
+    vscode.action 'find-it-faster.findWithinFiles'
+  end, { desc = '[S]earch By [G]rep' })
+  vim.keymap.set('n', '<leader>sr', function()
+    vscode.action 'find-it-faster.resumeSearch'
+  end, { desc = '[S]earch [R]esume' })
+end
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -240,6 +264,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- shift + ; followed by q is annoying on dvorak
+vim.api.nvim_create_user_command('Q', function(opts)
+  vim.cmd('q' .. (opts.bang and '!' or ''))
+end, { nargs = 0, bang = true, desc = 'Alias for :q, allowing capital Q in command mode' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -282,6 +311,9 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     opts = {
       signs = {
         add = { text = '+' },
@@ -309,6 +341,9 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       icons = {
@@ -382,6 +417,9 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
@@ -499,13 +537,12 @@ require('lazy').setup({
         builtin.find_files {
           find_command = {
             'rg',
-            '--no-ignore',
-            '--hidden',
             '--files',
-            '-g',
-            '!**/node_modules/*',
-            '-g',
+            '--hidden',
+            '--glob',
             '!**/.git/*',
+            '--ignore-file',
+            '!.env*',
           },
         }
       end, { desc = '[S]earch [C]ode Files in Repo' })
@@ -756,6 +793,8 @@ require('lazy').setup({
         ts_ls = {},
         tailwindcss = {},
 
+        jsonls = {},
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -805,6 +844,9 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
     keys = {
@@ -827,6 +869,7 @@ require('lazy').setup({
         -- You can use 'stop_after_first' to run the first available formatter from the list
         javascript = { 'prettierd', 'prettier', stop_after_first = true },
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
+        javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
@@ -834,6 +877,9 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
+    cond = function()
+      return not vim.g.vscode
+    end,
     event = 'InsertEnter',
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
@@ -973,6 +1019,9 @@ require('lazy').setup({
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
@@ -986,7 +1035,15 @@ require('lazy').setup({
   },
 
   -- Highlight todo, notes, etc in comments
-  { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
+  {
+    'folke/todo-comments.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
+    event = 'VimEnter',
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    opts = { signs = false },
+  },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
@@ -1006,27 +1063,34 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup()
 
-      -- Simple and easy statusline.
-      --  You could remove this setup call if you don't like it,
-      --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
-      -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- Debug hello world print
 
-      -- You can configure sections in the statusline by overriding their
-      -- default behavior. For example, here we set the section for
-      -- cursor location to LINE:COLUMN
-      ---@diagnostic disable-next-line: duplicate-set-field
-      statusline.section_location = function()
-        return '%2l:%-2v'
+      if not vim.g.vscode then
+        -- Simple and easy statusline.
+        --  You could remove this setup call if you don't like it,
+        --  and try some other statusline plugin
+        local statusline = require 'mini.statusline'
+        -- set use_icons to true if you have a Nerd Font
+        statusline.setup { use_icons = vim.g.have_nerd_font }
+
+        -- You can configure sections in the statusline by overriding their
+        -- default behavior. For example, here we set the section for
+        -- cursor location to LINE:COLUMN
+        ---@diagnostic disable-next-line: duplicate-set-field
+        statusline.section_location = function()
+          return '%2l:%-2v'
+        end
+
+        -- ... and there is more!
+        --  Check out: https://github.com/echasnovski/mini.nvim
       end
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    cond = function()
+      return not vim.g.vscode
+    end,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -1052,6 +1116,9 @@ require('lazy').setup({
   },
   { -- Sticky context on scroll
     'nvim-treesitter/nvim-treesitter-context',
+    cond = function()
+      return not vim.g.vscode
+    end,
     opts = {
       max_lines = 10,
       multiline_threshold = 3,
@@ -1087,74 +1154,24 @@ require('lazy').setup({
 
   { -- Perform linked editing on xml tags
     'windwp/nvim-ts-autotag',
+    cond = function()
+      return not vim.g.vscode
+    end,
     lazy = false,
     opts = {},
   },
   { -- AI autocompletion
     'supermaven-inc/supermaven-nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     opts = {},
   },
-  { -- AI chat
-    'yetone/avante.nvim',
-    event = 'VeryLazy',
-    lazy = false,
-    version = false, -- set this if you want to always pull the latest change
-    opts = {
-      provider = 'claude', -- Recommend using Claude
-      auto_suggestions_provider = 'copilot', -- Since auto-suggestions are a high-frequency operation and therefore expensive, it is recommended to specify an inexpensive provider or even a free provider: copilot
-      claude = {
-        endpoint = 'https://api.anthropic.com',
-        model = 'claude-3-5-sonnet-20240620',
-        temperature = 0,
-        max_tokens = 4096,
-      },
-      mappings = {
-        suggestion = {
-          accept = '<Tab>',
-        },
-      },
-    },
-    -- if you want to build from source then do `make BUILD_FROM_SOURCE=true`
-    build = 'make',
-    -- build = "powershell -ExecutionPolicy Bypass -File Build.ps1 -BuildFromSource false" -- for windows
-    dependencies = {
-      'nvim-treesitter/nvim-treesitter',
-      'stevearc/dressing.nvim',
-      'nvim-lua/plenary.nvim',
-      'MunifTanjim/nui.nvim',
-      --- The below dependencies are optional,
-      'nvim-tree/nvim-web-devicons', -- or echasnovski/mini.icons
-      'zbirenbaum/copilot.lua', -- for providers='copilot'
-      {
-        -- support for image pasting
-        'HakonHarnes/img-clip.nvim',
-        event = 'VeryLazy',
-        opts = {
-          -- recommended settings
-          default = {
-            embed_image_as_base64 = false,
-            prompt_for_file_name = false,
-            drag_and_drop = {
-              insert_mode = true,
-            },
-            -- required for Windows users
-            use_absolute_path = true,
-          },
-        },
-      },
-      {
-        -- Make sure to set this up properly if you have lazy=true
-        'MeanderingProgrammer/render-markdown.nvim',
-        opts = {
-          file_types = { 'markdown', 'Avante' },
-        },
-        ft = { 'markdown', 'Avante' },
-      },
-    },
-  },
-  --
   { -- Notifications and turning command mode into a command palette
     'folke/noice.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     event = 'VeryLazy',
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
@@ -1196,6 +1213,9 @@ require('lazy').setup({
   },
   { -- Bookmarks files
     'otavioschwanck/arrow.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     opts = {
       show_icons = true,
       leader_key = ';', -- Recommended to be a single key
@@ -1204,6 +1224,9 @@ require('lazy').setup({
   },
   { -- Autosave
     'okuuva/auto-save.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     cmd = 'ASToggle', -- optional for lazy loading on command
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
     config = function()
@@ -1214,6 +1237,9 @@ require('lazy').setup({
   },
   {
     'ggandor/leap.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     dependencies = { 'tpope/vim-repeat' },
     config = function()
       require('leap').add_default_mappings()
@@ -1221,13 +1247,56 @@ require('lazy').setup({
   },
   { -- Centers single buffer windows
     'shortcuts/no-neck-pain.nvim',
+    cond = function()
+      return not vim.g.vscode
+    end,
     version = '*',
     opts = {
       width = 127,
       autocmds = {
         enableOnVimEnter = true,
+        skipEnteringNoNeckPainBuffer = true,
+      },
+      buffers = {
+        wo = {
+          winfixwidth = true,
+        },
       },
     },
+  },
+  {
+    'akinsho/toggleterm.nvim',
+    version = '*',
+    config = function()
+      require('toggleterm').setup {
+        open_mapping = [[<c-\>]],
+      }
+
+      local Terminal = require('toggleterm.terminal').Terminal
+
+      local lazygit = Terminal:new {
+        cmd = 'lazygit',
+        dir = 'git_dir',
+        direction = 'float',
+        float_opts = {
+          border = 'double',
+        },
+        on_open = function(term)
+          vim.cmd 'startinsert!'
+          vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
+        end,
+        -- function to run on closing the terminal
+        on_close = function()
+          vim.cmd 'startinsert!'
+        end,
+      }
+
+      function _lazygit_toggle()
+        lazygit:toggle()
+      end
+
+      vim.keymap.set('n', '<leader>tg', '<cmd>lua _lazygit_toggle()<CR>', { desc = '[T]oggle [L]azygit' })
+    end,
   },
 }, {
   ui = {
