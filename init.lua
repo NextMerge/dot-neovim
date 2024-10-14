@@ -239,6 +239,17 @@ vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
 
+vim.keymap.set('n', '<leader>ox', function()
+  local r, c = unpack(vim.api.nvim_win_get_cursor(0))
+  vim.cmd(string.format(
+    'silent !cursor --folder-uri file://%s -g %s:%s:%s',
+    vim.fn.getcwd(),
+    vim.fn.expand '%:p',
+    r,
+    c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
+  ))
+end, { desc = '[O]pen E[x]ternal editor' })
+
 if vscode then
   vim.keymap.set('n', '<leader>sc', function()
     vscode.action 'find-it-faster.findFiles'
