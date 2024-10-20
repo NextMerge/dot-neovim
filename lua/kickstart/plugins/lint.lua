@@ -50,7 +50,9 @@ return {
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
+      -- BufEnter was removed because it has some weird edge case error when using with
+      -- multiple split ToggleTerm windows combined with NoNeckPain plugin
+      vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
           -- Only run the linter in buffers that you can modify in order to
