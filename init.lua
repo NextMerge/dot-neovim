@@ -157,6 +157,7 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
+-- Show source of diagnostic
 vim.diagnostic.config {
   virtual_text = {
     prefix = function(diagnostic)
@@ -188,7 +189,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+-- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -206,18 +207,21 @@ vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower win
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
 if not vscode then
-  vim.keymap.set({ 'n', 'v' }, 'J', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-  vim.keymap.set({ 'n', 'v' }, 'K', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+  vim.keymap.set({ 'n', 'v' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
+  vim.keymap.set({ 'n', 'v' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
 else
-  vim.keymap.set('n', 'J', function()
+  vim.keymap.set('n', '<C-d>', function()
     vscode.call('editorScroll', { args = { to = 'down', by = 'wrappedLine', value = 32 } })
     vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
   end, { desc = 'Move down and center screen on cursor' })
-  vim.keymap.set('n', 'K', function()
+  vim.keymap.set('n', '<C-u>', function()
     vscode.call('editorScroll', { args = { to = 'up', by = 'wrappedLine', value = 32 } })
     vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
   end, { desc = 'Move up and center screen on cursor' })
 end
+
+vim.keymap.set({ 'n', 'v' }, 'J', '<Nop>')
+vim.keymap.set({ 'n', 'v' }, 'K', '<Nop>')
 
 vim.keymap.set('v', '<leader>p', '"_dP', { noremap = true, desc = "[P]aste over highlighted text but don't overwrite the copy register" })
 
@@ -579,7 +583,6 @@ require('lazy').setup({
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
         builtin.find_files {
-          initial_mode = 'normal',
           cwd = vim.fn.stdpath 'config',
           find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' },
         }
@@ -800,7 +803,6 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        eslint = {},
         ts_ls = {},
         tailwindcss = {},
 
@@ -1263,7 +1265,7 @@ require('lazy').setup({
     end,
     version = '*',
     opts = {
-      width = 127,
+      width = 160,
       autocmds = {
         enableOnVimEnter = true,
         skipEnteringNoNeckPainBuffer = true,
@@ -1285,6 +1287,20 @@ require('lazy').setup({
 
       local Terminal = require('toggleterm.terminal').Terminal
 
+      local generic = Terminal:new {
+        direction = 'float',
+        float_opts = {
+          border = 'double',
+        },
+        on_open = function(term)
+          vim.cmd 'startinsert!'
+          vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
+        end,
+        on_close = function()
+          vim.cmd 'startinsert!'
+        end,
+      }
+
       local lazygit = Terminal:new {
         cmd = 'lazygit',
         dir = 'git_dir',
@@ -1302,11 +1318,12 @@ require('lazy').setup({
         end,
       }
 
-      function _lazygit_toggle()
+      vim.keymap.set('n', '<leader>tt', function()
+        generic:toggle()
+      end, { desc = '[T]oggle [T]erminal' })
+      vim.keymap.set('n', '<leader>tg', function()
         lazygit:toggle()
-      end
-
-      vim.keymap.set('n', '<leader>tg', '<cmd>lua _lazygit_toggle()<CR>', { desc = '[T]oggle [L]azygit' })
+      end, { desc = '[T]oggle [L]azygit' })
     end,
   },
 }, {
