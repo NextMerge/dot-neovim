@@ -189,7 +189,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
--- vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
 -- vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -220,10 +220,14 @@ else
   end, { desc = 'Move up and center screen on cursor' })
 end
 
-vim.keymap.set({ 'n', 'v' }, 'J', '<Nop>')
-vim.keymap.set({ 'n', 'v' }, 'K', '<Nop>')
+vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
+vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
 
-vim.keymap.set('v', '<leader>p', '"_dP', { noremap = true, desc = "[P]aste over highlighted text but don't overwrite the copy register" })
+-- Mighty cringe
+vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
+
+vim.keymap.set('v', '<leader>p', '"_dP', { desc = "[P]aste over highlighted text but don't overwrite the copy register" })
+vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = '[D]elete without writing to the copy register' })
 
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
@@ -409,7 +413,7 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
       triggers = {
-        { 's', mode = { 'n', 'x' } },
+        { ';', mode = { 'n', 'x' } },
         { '<leader>', mode = { 'n', 'x' } },
         { 'g', mode = { 'n', 'x' } },
         { ']', mode = { 'n', 'x' } },
@@ -804,6 +808,7 @@ require('lazy').setup({
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         ts_ls = {},
+        eslint = {},
         tailwindcss = {},
 
         jsonls = {},
@@ -884,6 +889,7 @@ require('lazy').setup({
         typescript = { 'prettierd', 'prettier', stop_after_first = true },
         javascriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
+        graphql = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1074,7 +1080,17 @@ require('lazy').setup({
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup()
+      require('mini.surround').setup {
+        mappings = {
+          add = ';a', -- Add surrounding in Normal and Visual modes
+          delete = ';d', -- Delete surrounding
+          find = ';f', -- Find surrounding (to the right)
+          find_left = ';F', -- Find surrounding (to the left)
+          highlight = ';h', -- Highlight surrounding
+          replace = ';r', -- Replace surrounding
+          update_n_lines = ';n', -- Update `n_lines`
+        },
+      }
 
       -- Debug hello world print
 
@@ -1231,8 +1247,13 @@ require('lazy').setup({
     end,
     opts = {
       show_icons = true,
-      leader_key = ';', -- Recommended to be a single key
+      leader_key = "'",
       buffer_leader_key = 'm', -- Per Buffer Mappings
+      mappings = {
+        toggle = 'g',
+        open_vertical = '|',
+      },
+      index_keys = 'htnsmwvzHTNSMWVZ123456789',
     },
   },
   { -- Autosave

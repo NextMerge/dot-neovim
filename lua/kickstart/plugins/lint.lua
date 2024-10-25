@@ -10,9 +10,9 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
-        javascript = { 'eslint' },
-        typescript = { 'eslint' },
-        typescriptreact = { 'eslint' },
+        --   javascript = { 'eslint' },
+        --   typescript = { 'eslint' },
+        --   typescriptreact = { 'eslint' },
       }
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
@@ -50,9 +50,7 @@ return {
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
-      -- BufEnter was removed because it has some weird edge case error when using with
-      -- multiple split ToggleTerm windows combined with NoNeckPain plugin
-      vim.api.nvim_create_autocmd({ 'BufWritePost', 'InsertLeave' }, {
+      vim.api.nvim_create_autocmd({ 'BufEnter', 'BufWritePost', 'InsertLeave' }, {
         group = lint_augroup,
         callback = function()
           -- Only run the linter in buffers that you can modify in order to
