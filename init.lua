@@ -166,11 +166,17 @@ vim.diagnostic.config {
   },
 }
 
--- Immediately commit sin
-local vscode = vim.g.vscode and require 'vscode' or nil
+function vim.getVisualSelection()
+  vim.cmd 'noau normal! "vy"'
+  local text = vim.fn.getreg 'v'
+  vim.fn.setreg('v', {})
 
-if vscode then
-  vim.notify = vscode.notify
+  text = string.gsub(text, '\n', '')
+  if #text > 0 then
+    return text
+  else
+    return ''
+  end
 end
 
 -- [[ Basic Keymaps ]]
@@ -206,19 +212,8 @@ vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right win
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-if not vscode then
-  vim.keymap.set({ 'n', 'v' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-  vim.keymap.set({ 'n', 'v' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
-else
-  vim.keymap.set('n', '<C-d>', function()
-    vscode.call('editorScroll', { args = { to = 'down', by = 'wrappedLine', value = 32 } })
-    vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
-  end, { desc = 'Move down and center screen on cursor' })
-  vim.keymap.set('n', '<C-u>', function()
-    vscode.call('editorScroll', { args = { to = 'up', by = 'wrappedLine', value = 32 } })
-    vscode.call('cursorMove', { args = { to = 'viewPortCenter' } })
-  end, { desc = 'Move up and center screen on cursor' })
-end
+vim.keymap.set({ 'n', 'v' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
+vim.keymap.set({ 'n', 'v' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
 
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
@@ -243,6 +238,10 @@ vim.keymap.set('n', '<leader>cc', function()
   require('treesitter-context').go_to_context(vim.v.count1)
 end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
 
+vim.keymap.set('n', '<leader>ce', function()
+  vim.cmd 'EslintFixAll'
+end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
+
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
@@ -258,18 +257,6 @@ vim.keymap.set('n', '<leader>ox', function()
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
 
-if vscode then
-  vim.keymap.set('n', '<leader>sc', function()
-    vscode.action 'find-it-faster.findFiles'
-  end, { desc = '[S]earch [C]ode Files in Repo' })
-  vim.keymap.set('n', '<leader>sg', function()
-    vscode.action 'find-it-faster.findWithinFiles'
-  end, { desc = '[S]earch By [G]rep' })
-  vim.keymap.set('n', '<leader>sr', function()
-    vscode.action 'find-it-faster.resumeSearch'
-  end, { desc = '[S]earch [R]esume' })
-end
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -283,11 +270,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
-
--- shift + ; followed by q is annoying on dvorak
-vim.api.nvim_create_user_command('Q', function(opts)
-  vim.cmd('q' .. (opts.bang and '!' or ''))
-end, { nargs = 0, bang = true, desc = 'Alias for :q, allowing capital Q in command mode' })
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -330,9 +312,6 @@ require('lazy').setup({
   -- See `:help gitsigns` to understand what the configuration keys do
   { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     opts = {
       signs = {
         add = { text = '+' },
@@ -360,9 +339,6 @@ require('lazy').setup({
 
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       icons = {
@@ -436,9 +412,6 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = 'VimEnter',
     branch = '0.1.x',
     dependencies = {
@@ -546,7 +519,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
       vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
@@ -613,6 +586,11 @@ require('lazy').setup({
           theme = 'dropdown',
         })
       end)
+
+      vim.keymap.set('v', '<leader>sg', function()
+        local text = vim.getVisualSelection()
+        builtin.live_grep { default_text = text }
+      end, { desc = '[S]earch [G]rep in Selection' })
     end,
   },
 
@@ -633,9 +611,6 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    cond = function()
-      return not vim.g.vscode
-    end,
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       { 'williamboman/mason.nvim', config = true }, -- NOTE: Must be loaded before dependants
@@ -862,9 +837,6 @@ require('lazy').setup({
 
   { -- Autoformat
     'stevearc/conform.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = { 'BufWritePre' },
     cmd = { 'ConformInfo' },
     keys = {
@@ -896,9 +868,6 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = 'InsertEnter',
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
@@ -926,7 +895,6 @@ require('lazy').setup({
         },
       },
       'saadparwaiz1/cmp_luasnip',
-
       -- Adds other completion capabilities.
       --  nvim-cmp does not ship with all sources by default. They are split
       --  into multiple repos for maintenance purposes.
@@ -1038,9 +1006,6 @@ require('lazy').setup({
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
     'folke/tokyonight.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     priority = 1000, -- Make sure to load this before all the other start plugins.
     init = function()
       -- Load the colorscheme here.
@@ -1056,9 +1021,6 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   {
     'folke/todo-comments.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = 'VimEnter',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
@@ -1094,32 +1056,27 @@ require('lazy').setup({
 
       -- Debug hello world print
 
-      if not vim.g.vscode then
-        -- Simple and easy statusline.
-        --  You could remove this setup call if you don't like it,
-        --  and try some other statusline plugin
-        local statusline = require 'mini.statusline'
-        -- set use_icons to true if you have a Nerd Font
-        statusline.setup { use_icons = vim.g.have_nerd_font }
+      -- Simple and easy statusline.
+      --  You could remove this setup call if you don't like it,
+      --  and try some other statusline plugin
+      local statusline = require 'mini.statusline'
+      -- set use_icons to true if you have a Nerd Font
+      statusline.setup { use_icons = vim.g.have_nerd_font }
 
-        -- You can configure sections in the statusline by overriding their
-        -- default behavior. For example, here we set the section for
-        -- cursor location to LINE:COLUMN
-        ---@diagnostic disable-next-line: duplicate-set-field
-        statusline.section_location = function()
-          return '%2l:%-2v'
-        end
-
-        -- ... and there is more!
-        --  Check out: https://github.com/echasnovski/mini.nvim
+      -- You can configure sections in the statusline by overriding their
+      -- default behavior. For example, here we set the section for
+      -- cursor location to LINE:COLUMN
+      --@diagnostic disable-next-line: duplicate-set-field
+      statusline.section_location = function()
+        return '%2l:%-2v'
       end
+
+      -- ... and there is more!
+      --  Check out: https://github.com/echasnovski/mini.nvim
     end,
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
-    cond = function()
-      return not vim.g.vscode
-    end,
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -1145,9 +1102,6 @@ require('lazy').setup({
   },
   { -- Sticky context on scroll
     'nvim-treesitter/nvim-treesitter-context',
-    cond = function()
-      return not vim.g.vscode
-    end,
     opts = {
       max_lines = 10,
       multiline_threshold = 3,
@@ -1183,24 +1137,27 @@ require('lazy').setup({
 
   { -- Perform linked editing on xml tags
     'windwp/nvim-ts-autotag',
-    cond = function()
-      return not vim.g.vscode
-    end,
     lazy = false,
     opts = {},
   },
   { -- AI autocompletion
-    'supermaven-inc/supermaven-nvim',
-    cond = function()
-      return not vim.g.vscode
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    config = function()
+      require('copilot').setup {
+        suggestion = {
+          auto_trigger = true,
+          hide_during_completion = false,
+          keymap = {
+            accept = '<C-r>',
+          },
+        },
+      }
     end,
-    opts = {},
   },
   { -- Notifications and turning command mode into a command palette
     'folke/noice.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     event = 'VeryLazy',
     dependencies = {
       -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
@@ -1242,9 +1199,6 @@ require('lazy').setup({
   },
   { -- Bookmarks files
     'otavioschwanck/arrow.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     opts = {
       show_icons = true,
       leader_key = "'",
@@ -1258,9 +1212,6 @@ require('lazy').setup({
   },
   { -- Autosave
     'okuuva/auto-save.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     cmd = 'ASToggle', -- optional for lazy loading on command
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
     config = function()
@@ -1271,9 +1222,6 @@ require('lazy').setup({
   },
   {
     'ggandor/leap.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     dependencies = { 'tpope/vim-repeat' },
     config = function()
       require('leap').add_default_mappings()
@@ -1281,9 +1229,6 @@ require('lazy').setup({
   },
   { -- Centers single buffer windows
     'shortcuts/no-neck-pain.nvim',
-    cond = function()
-      return not vim.g.vscode
-    end,
     version = '*',
     opts = {
       width = 160,
