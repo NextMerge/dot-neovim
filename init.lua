@@ -227,12 +227,12 @@ vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = '[D]elete without wr
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = '[C]opy relative file path' })
+vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = 'Copy relative file path' })
 
-vim.keymap.set('n', '<C-M-S-h>', vim.lsp.buf.hover, { silent = true, desc = 'LSP: [H]over Documentation' })
-vim.keymap.set('n', '<C-M-S-d>', vim.diagnostic.open_float, { desc = '[D]iagnostics: Hover' })
-vim.keymap.set('n', '<C-M-S-g>', vim.diagnostic.goto_next, { desc = 'Diagnostic: [G]o to next diagnostic' })
-vim.keymap.set('n', '<C-M-S-c>', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
+vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { silent = true, desc = '[C]ode: [H]over Documentation' })
+vim.keymap.set('n', '<leader>dh', vim.diagnostic.open_float, { desc = '[D]iagnostics: [H]over' })
+vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_next, { desc = 'Diagnostic: Go to [N]ext diagnostic' })
+vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
 
 vim.keymap.set('n', '<leader>cc', function()
   require('treesitter-context').go_to_context(vim.v.count1)
