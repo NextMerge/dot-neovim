@@ -1237,22 +1237,6 @@ require('lazy').setup({
       require('leap').add_default_mappings()
     end,
   },
-  { -- Centers single buffer windows
-    'shortcuts/no-neck-pain.nvim',
-    version = '*',
-    opts = {
-      width = 160,
-      autocmds = {
-        enableOnVimEnter = true,
-        skipEnteringNoNeckPainBuffer = true,
-      },
-      buffers = {
-        wo = {
-          winfixwidth = true,
-        },
-      },
-    },
-  },
   {
     'akinsho/toggleterm.nvim',
     version = '*',
