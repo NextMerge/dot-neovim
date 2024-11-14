@@ -227,12 +227,13 @@ vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = '[D]elete without wr
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<C-M-S-y>', ':let @+=expand("%")<CR>', { desc = 'Copy relative file path' })
+vim.keymap.set('n', '<S-C-M-y>', ':let @+=expand("%")<CR>', { desc = 'Copy relative file path' })
 
-vim.keymap.set('n', '<leader>ch', vim.lsp.buf.hover, { silent = true, desc = '[C]ode: [H]over Documentation' })
-vim.keymap.set('n', '<leader>dh', vim.diagnostic.open_float, { desc = '[D]iagnostics: [H]over' })
-vim.keymap.set('n', '<leader>dn', vim.diagnostic.goto_next, { desc = 'Diagnostic: Go to [N]ext diagnostic' })
-vim.keymap.set('n', '<leader>dp', vim.diagnostic.goto_prev, { desc = 'Diagnostic: [G]o to previous diagnostic' })
+vim.keymap.set('n', 'H', vim.lsp.buf.hover, { silent = true, desc = '[H]over' })
+
+vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = '[E]rror: [H]over diagnostic' })
+vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = '[E]rror: Go to [N]ext diagnostic' })
+vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = '[E]rror: Go to [P]revious diagnostic' })
 
 vim.keymap.set('n', '<leader>cc', function()
   require('treesitter-context').go_to_context(vim.v.count1)
@@ -245,6 +246,8 @@ end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
+
+vim.keymap.set('n', '<leader><leader>', ':', { silent = true, desc = 'Command Prompt' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -382,9 +385,9 @@ require('lazy').setup({
       spec = {
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
+        { '<leader>e', group = '[E]rror' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
+        { '<leader>p', group = '[P]roject' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
       },
@@ -513,7 +516,6 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      local action_state = require 'telescope.actions.state'
 
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -564,28 +566,6 @@ require('lazy').setup({
           find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' },
         }
       end, { desc = '[S]earch [N]eovim files' })
-
-      vim.keymap.set('n', '<leader><leader>', function()
-        builtin.buffers({
-          initial_mode = 'normal',
-          attach_mappings = function(prompt_bufnr, map)
-            local delete_buf = function()
-              local current_picker = action_state.get_current_picker(prompt_bufnr)
-              current_picker:delete_selection(function(selection)
-                vim.api.nvim_buf_delete(selection.bufnr, { force = true })
-              end)
-            end
-
-            map('n', '<c-d>', delete_buf)
-
-            return true
-          end,
-        }, {
-          sort_lastused = true,
-          sort_mru = true,
-          theme = 'dropdown',
-        })
-      end)
 
       vim.keymap.set('v', '<leader>sg', function()
         local text = vim.getVisualSelection()
@@ -690,11 +670,11 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ws', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[W]orkspace [S]ymbols')
+          map('<leader>ps', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[P]roject [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>rn', vim.lsp.buf.rename, '[R]e[n]ame')
+          map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
@@ -1160,7 +1140,8 @@ require('lazy').setup({
           auto_trigger = true,
           hide_during_completion = false,
           keymap = {
-            accept = '<C-r>',
+            accept = '<C-]>',
+            dismiss = '<C-[>',
           },
         },
       }
@@ -1284,6 +1265,22 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>tg', function()
         lazygit:toggle()
       end, { desc = '[T]oggle [L]azygit' })
+    end,
+  },
+  {
+    'RRethy/nvim-treesitter-textsubjects',
+    config = function()
+      require('nvim-treesitter.configs').setup {
+        textsubjects = {
+          enable = true,
+          prev_selection = ',', -- (Optional) keymap to select the previous selection
+          keymaps = {
+            ['.'] = 'textsubjects-smart',
+            [';'] = 'textsubjects-container-outer',
+            ['i;'] = { 'textsubjects-container-inner', desc = 'Select inside containers (classes, functions, etc.)' },
+          },
+        },
+      }
     end,
   },
 }, {
