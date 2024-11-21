@@ -247,7 +247,7 @@ vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
 
-vim.keymap.set('n', '<leader><leader>', ':', { silent = true, desc = 'Command Prompt' })
+vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -259,6 +259,24 @@ vim.keymap.set('n', '<leader>ox', function()
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
+
+vim.keymap.set('n', '<leader>oc', function()
+  function TriggerKeyboardMacro(macro_name)
+    local command = string.format([[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s"']], macro_name)
+    vim.fn.system(command)
+  end
+
+  vim.cmd 'write'
+
+  -- Write the path and line info as src/../.. line:col
+  local path = vim.fn.expand '%'
+  local line = vim.fn.line '.'
+  local col = vim.fn.col '.'
+
+  -- Write to clipboard
+  vim.fn.setreg('+', string.format('%s:%s:%s', path, line, col))
+  TriggerKeyboardMacro 'Focus Cursor and force AI amogus'
+end, { desc = '[O]pen [C]ursor' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
