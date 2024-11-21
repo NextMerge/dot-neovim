@@ -268,13 +268,11 @@ vim.keymap.set('n', '<leader>oc', function()
 
   vim.cmd 'write'
 
-  -- Write the path and line info as src/../.. line:col
   local path = vim.fn.expand '%'
   local line = vim.fn.line '.'
   local col = vim.fn.col '.'
-
-  -- Write to clipboard
   vim.fn.setreg('+', string.format('%s:%s:%s', path, line, col))
+
   TriggerKeyboardMacro 'Focus Cursor and force AI amogus'
 end, { desc = '[O]pen [C]ursor' })
 
@@ -537,7 +535,7 @@ require('lazy').setup({
 
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      -- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
       -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
@@ -545,7 +543,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sc', function()
+      vim.keymap.set('n', '<leader>sf', function()
         builtin.find_files {
           find_command = {
             'rg',
@@ -557,7 +555,7 @@ require('lazy').setup({
             '!.env*',
           },
         }
-      end, { desc = '[S]earch [C]ode Files in Repo' })
+      end, { desc = '[S]earch [F]iles' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>z', function()
@@ -1223,11 +1221,9 @@ require('lazy').setup({
     'okuuva/auto-save.nvim',
     cmd = 'ASToggle', -- optional for lazy loading on command
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
-    config = function()
-      require('auto-save').setup {
-        debounce_delay = 2000,
-      }
-    end,
+    opts = {
+      debounce_delay = 2000,
+    },
   },
   {
     'ggandor/leap.nvim',
@@ -1288,6 +1284,7 @@ require('lazy').setup({
   {
     'RRethy/nvim-treesitter-textsubjects',
     config = function()
+      ---@diagnostic disable-next-line: missing-fields
       require('nvim-treesitter.configs').setup {
         textsubjects = {
           enable = true,
