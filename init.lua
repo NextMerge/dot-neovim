@@ -218,7 +218,6 @@ vim.keymap.set({ 'n', 'v' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center sc
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
 vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
 
--- Mighty cringe
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 
 vim.keymap.set('v', '<leader>p', '"_dP', { desc = "[P]aste over highlighted text but don't overwrite the copy register" })
@@ -252,7 +251,7 @@ vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
   vim.cmd(string.format(
-    'silent !cursor --folder-uri file://%s -g %s:%s:%s',
+    'silent !cursor -r --folder-uri file://%s -g %s:%s:%s',
     vim.fn.getcwd(),
     vim.fn.expand '%:p',
     r,
@@ -261,20 +260,44 @@ vim.keymap.set('n', '<leader>ox', function()
 end, { desc = '[O]pen E[x]ternal editor' })
 
 vim.keymap.set('n', '<leader>oc', function()
-  function TriggerKeyboardMacro(macro_name)
-    local command = string.format([[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s"']], macro_name)
-    vim.fn.system(command)
-  end
-
-  vim.cmd 'write'
-
-  local path = vim.fn.expand '%'
+  local dir = vim.fn.getcwd()
+  local path = vim.fn.expand '%:p'
   local line = vim.fn.line '.'
   local col = vim.fn.col '.'
-  vim.fn.setreg('+', string.format('%s:%s:%s', path, line, col))
 
-  TriggerKeyboardMacro 'Focus Cursor and force AI amogus'
+  local command = string.format(
+    [[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s" with parameter "%s"']],
+    'Open in Cursor',
+    string.format('%s %s:%s:%s', dir, path, line, col)
+  )
+  vim.fn.system(command)
 end, { desc = '[O]pen [C]ursor' })
+
+vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave' }, {
+  desc = 'Sync cursor position with external editor',
+  group = vim.api.nvim_create_augroup('sync-cursor', { clear = true }),
+  callback = function()
+    -- Skip if buffer is not a file on disk or is a terminal buffer
+    if vim.fn.expand '%' == '' or vim.fn.expand('%'):match '^term://' then
+      return
+    end
+
+    local dir = vim.fn.getcwd():gsub('/Users/markjarjour', '~')
+    local path = vim.fn.expand '%'
+    local line = vim.fn.line '.'
+    local col = vim.fn.col '.'
+
+    local command = string.format(
+      [[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s" with parameter "%s"']],
+      'Sync Cursor File',
+      string.format('%s %s:%s:%s', dir, path, line, col)
+    )
+
+    vim.schedule(function()
+      vim.fn.jobstart(command)
+    end)
+  end,
+})
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -1221,9 +1244,7 @@ require('lazy').setup({
     'okuuva/auto-save.nvim',
     cmd = 'ASToggle', -- optional for lazy loading on command
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
-    opts = {
-      debounce_delay = 2000,
-    },
+    opts = {},
   },
   {
     'ggandor/leap.nvim',
@@ -1236,8 +1257,19 @@ require('lazy').setup({
     'akinsho/toggleterm.nvim',
     version = '*',
     config = function()
+      local on_open = function()
+        vim.opt.title = false
+      end
+
+      local on_close = function()
+        vim.opt.titlestring = 'nvim'
+        vim.opt.title = true
+      end
+
       require('toggleterm').setup {
         open_mapping = [[<c-\>]],
+        on_open = on_open,
+        on_close = on_close,
       }
 
       local Terminal = require('toggleterm.terminal').Terminal
@@ -1248,10 +1280,12 @@ require('lazy').setup({
           border = 'double',
         },
         on_open = function(term)
+          on_open()
           vim.cmd 'startinsert!'
           vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
         end,
         on_close = function()
+          on_close()
           vim.cmd 'startinsert!'
         end,
       }
@@ -1264,11 +1298,12 @@ require('lazy').setup({
           border = 'double',
         },
         on_open = function(term)
+          on_open()
           vim.cmd 'startinsert!'
           vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
         end,
-        -- function to run on closing the terminal
         on_close = function()
+          on_close()
           vim.cmd 'startinsert!'
         end,
       }
