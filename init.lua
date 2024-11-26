@@ -222,6 +222,7 @@ vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 
 vim.keymap.set('v', '<leader>p', '"_dP', { desc = "[P]aste over highlighted text but don't overwrite the copy register" })
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = '[D]elete without writing to the copy register' })
+vim.keymap.set({ 'n', 'v' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
@@ -258,46 +259,6 @@ vim.keymap.set('n', '<leader>ox', function()
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
-
-vim.keymap.set('n', '<leader>oc', function()
-  local dir = vim.fn.getcwd()
-  local path = vim.fn.expand '%:p'
-  local line = vim.fn.line '.'
-  local col = vim.fn.col '.'
-
-  local command = string.format(
-    [[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s" with parameter "%s"']],
-    'Open in Cursor',
-    string.format('%s %s:%s:%s', dir, path, line, col)
-  )
-  vim.fn.system(command)
-end, { desc = '[O]pen [C]ursor' })
-
-vim.api.nvim_create_autocmd({ 'BufEnter', 'InsertLeave' }, {
-  desc = 'Sync cursor position with external editor',
-  group = vim.api.nvim_create_augroup('sync-cursor', { clear = true }),
-  callback = function()
-    -- Skip if buffer is not a file on disk or is a terminal buffer
-    if vim.fn.expand '%' == '' or vim.fn.expand('%'):match '^term://' then
-      return
-    end
-
-    local dir = vim.fn.getcwd():gsub('/Users/markjarjour', '~')
-    local path = vim.fn.expand '%'
-    local line = vim.fn.line '.'
-    local col = vim.fn.col '.'
-
-    local command = string.format(
-      [[osascript -e 'tell application "Keyboard Maestro Engine" to do script "%s" with parameter "%s"']],
-      'Sync Cursor File',
-      string.format('%s %s:%s:%s', dir, path, line, col)
-    )
-
-    vim.schedule(function()
-      vim.fn.jobstart(command)
-    end)
-  end,
-})
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -1100,6 +1061,18 @@ require('lazy').setup({
         return '%2l:%-2v'
       end
 
+      -- Indentation guides for current scope
+      local indent_scope = require 'mini.indentscope'
+      indent_scope.setup {
+        draw = { delay = 0, animation = indent_scope.gen_animation.none() },
+        mappings = {
+          object_scope = '',
+          object_scope_with_border = '',
+          goto_top = '',
+          goto_bottom = '',
+        },
+      }
+
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
     end,
@@ -1147,7 +1120,7 @@ require('lazy').setup({
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
   require 'kickstart.plugins.debug',
-  require 'kickstart.plugins.indent_line',
+  -- require 'kickstart.plugins.indent_line',
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   -- require 'kickstart.plugins.neo-tree',
@@ -1246,14 +1219,14 @@ require('lazy').setup({
     event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
     opts = {},
   },
-  {
+  { -- Faster nav when I remember this exists
     'ggandor/leap.nvim',
     dependencies = { 'tpope/vim-repeat' },
     config = function()
       require('leap').add_default_mappings()
     end,
   },
-  {
+  { -- Customizable terminals
     'akinsho/toggleterm.nvim',
     version = '*',
     config = function()
