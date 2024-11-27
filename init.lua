@@ -207,8 +207,8 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
+vim.keymap.set('n', '<C-Right>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
+vim.keymap.set('n', '<C-Left>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
@@ -1247,8 +1247,8 @@ require('lazy').setup({
 
       function _G.set_terminal_keymaps()
         local opts = { buffer = 0 }
-        vim.keymap.set('t', '<C-h>', [[<Cmd>wincmd h<CR>]], opts)
-        vim.keymap.set('t', '<C-j>', [[<Cmd>wincmd j<CR>]], opts)
+        vim.keymap.set('t', '<C-Right>', [[<Cmd>wincmd h<CR>]], opts)
+        vim.keymap.set('t', '<C-Left>', [[<Cmd>wincmd j<CR>]], opts)
         vim.keymap.set('t', '<C-k>', [[<Cmd>wincmd k<CR>]], opts)
         vim.keymap.set('t', '<C-l>', [[<Cmd>wincmd l<CR>]], opts)
         vim.keymap.set('t', '<C-w>', [[<C-\><C-n><C-w>]], opts)
