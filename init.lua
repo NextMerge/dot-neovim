@@ -791,6 +791,10 @@ require('lazy').setup({
             },
           },
         },
+
+        bashls = {
+          filetypes = { 'sh', 'zsh' },
+        },
       }
 
       -- Ensure the servers and tools above are installed
@@ -852,6 +856,8 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         graphql = { 'prettierd', 'prettier', stop_after_first = true },
         json = { 'prettierd', 'prettier', stop_after_first = true },
+        zsh = { 'shfmt' },
+        sh = { 'shfmt' },
       },
     },
   },
