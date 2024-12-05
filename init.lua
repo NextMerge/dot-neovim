@@ -157,15 +157,6 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
--- Show source of diagnostic
-vim.diagnostic.config {
-  virtual_text = {
-    prefix = function(diagnostic)
-      return string.format('[%s] ', diagnostic.source)
-    end,
-  },
-}
-
 function vim.getVisualSelection()
   vim.cmd 'noau normal! "vy"'
   local text = vim.fn.getreg 'v'
@@ -235,14 +226,6 @@ vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = '[E]rror: 
 vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = '[E]rror: Go to [N]ext diagnostic' })
 vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = '[E]rror: Go to [P]revious diagnostic' })
 
-vim.keymap.set('n', '<leader>cc', function()
-  require('treesitter-context').go_to_context(vim.v.count1)
-end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
-
-vim.keymap.set('n', '<leader>ce', function()
-  vim.cmd 'EslintFixAll'
-end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
-
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd 'Ex'
 end, { silent = true, desc = '[P]roject [V]iew' })
@@ -259,6 +242,8 @@ vim.keymap.set('n', '<leader>ox', function()
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
+
+vim.keymap.set('n', '<C-]>', '<Nop>', { silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -492,6 +477,12 @@ require('lazy').setup({
             path_display = filenameFirst,
             previewer = false,
           },
+          live_grep = {
+            path_display = filenameFirst,
+          },
+          lsp_references = {
+            path_display = filenameFirst,
+          },
           diagnostics = {
             path_display = filenameFirst,
             layout_strategy = 'center',
@@ -679,6 +670,16 @@ require('lazy').setup({
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+
+          vim.keymap.set('n', '<leader>cc', function()
+            require('treesitter-context').go_to_context(vim.v.count1)
+          end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
+
+          vim.keymap.set('n', '<leader>ce', function()
+            vim.cmd 'EslintFixAll'
+          end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
+
+          map('<leader>ct', vim.lsp.buf.type_definition, '[C]ode [T]ype definition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
