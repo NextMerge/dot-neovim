@@ -296,6 +296,9 @@ require('lazy').setup({
         enabled = true,
         sections = {
           { section = 'header' },
+          { title = 'MRU ', file = vim.fn.fnamemodify('.', ':~'), padding = 1 },
+          { section = 'recent_files', cwd = true, limit = 8, padding = 1 },
+          { title = 'Commands', padding = 1 },
           { section = 'keys', gap = 1, padding = 1 },
           { section = 'startup' },
         },
@@ -309,7 +312,13 @@ require('lazy').setup({
             { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
             { icon = ' ', key = 'g', desc = 'Find Text', action = ":lua Snacks.dashboard.pick('live_grep')" },
             { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
-            { icon = ' ', key = 'c', desc = 'Config', action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config'), find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' }})" },
+            {
+              icon = ' ',
+              key = 'c',
+              desc = 'Config',
+              action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config'), find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' }})",
+            },
+            { icon = ' ', key = 's', desc = 'Open Last File', action = ":lua Snacks.dashboard.pick('oldfiles')" },
             { icon = '󰒲 ', key = 'L', desc = 'Lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
             { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
           },
@@ -372,13 +381,6 @@ require('lazy').setup({
         desc = 'Git Browse',
       },
       {
-        '<leader>gb',
-        function()
-          Snacks.git.blame_line()
-        end,
-        desc = 'Git Blame Line',
-      },
-      {
         '<leader>gf',
         function()
           Snacks.lazygit.log_file()
@@ -407,20 +409,6 @@ require('lazy').setup({
         desc = 'Dismiss All Notifications',
       },
       {
-        '<c-/>',
-        function()
-          Snacks.terminal()
-        end,
-        desc = 'Toggle Terminal',
-      },
-      {
-        '<c-_>',
-        function()
-          Snacks.terminal()
-        end,
-        desc = 'which_key_ignore',
-      },
-      {
         ']]',
         function()
           Snacks.words.jump(vim.v.count1)
@@ -435,24 +423,6 @@ require('lazy').setup({
         end,
         desc = 'Prev Reference',
         mode = { 'n', 't' },
-      },
-      {
-        '<leader>N',
-        desc = 'Neovim News',
-        function()
-          Snacks.win {
-            file = vim.api.nvim_get_runtime_file('doc/news.txt', false)[1],
-            width = 0.6,
-            height = 0.6,
-            wo = {
-              spell = false,
-              wrap = false,
-              signcolumn = 'yes',
-              statuscolumn = ' ',
-              conceallevel = 3,
-            },
-          }
-        end,
       },
     },
     init = function()
