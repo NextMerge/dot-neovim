@@ -195,8 +195,8 @@ vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- So leap can't fire accidentally
-vim.keymap.set("v", "s", "<Nop>")
-vim.keymap.set("v", "S", "<Nop>")
+vim.keymap.set('v', 's', '<Nop>')
+vim.keymap.set('v', 'S', '<Nop>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -305,13 +305,6 @@ require('lazy').setup({
           { title = 'Commands', padding = 1 },
           { section = 'keys', gap = 1, padding = 1 },
           { section = 'startup' },
-            header = [[
-███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
         },
         preset = {
           -- Used by the `keys` section to show keymaps.
