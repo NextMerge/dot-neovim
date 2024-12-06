@@ -194,6 +194,10 @@ vim.keymap.set('n', 'l', '<cmd>echo "Use arrows to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
+-- So leap can't fire accidentally
+vim.keymap.set("v", "s", "<Nop>")
+vim.keymap.set("v", "S", "<Nop>")
+
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
 --
@@ -301,6 +305,13 @@ require('lazy').setup({
           { title = 'Commands', padding = 1 },
           { section = 'keys', gap = 1, padding = 1 },
           { section = 'startup' },
+            header = [[
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
         },
         preset = {
           -- Used by the `keys` section to show keymaps.
@@ -318,7 +329,6 @@ require('lazy').setup({
               desc = 'Config',
               action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config'), find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' }})",
             },
-            { icon = ' ', key = 's', desc = 'Open Last File', action = ":lua Snacks.dashboard.pick('oldfiles')" },
             { icon = '󰒲 ', key = 'L', desc = 'Lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
             { icon = ' ', key = 'q', desc = 'Quit', action = ':qa' },
           },
@@ -331,6 +341,7 @@ require('lazy').setup({
       quickfile = { enabled = true },
       statuscolumn = { enabled = true },
       words = { enabled = true },
+      terminal = { enabled = false },
       styles = {
         notification = {
           wo = { wrap = true }, -- Wrap notifications
@@ -545,6 +556,8 @@ require('lazy').setup({
         { '<leader>p', group = '[P]roject' },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>g', group = '[G]it', mode = { 'n' } },
+        { '<leader>u', group = '[U]ser', mode = { 'n' } },
       },
       triggers = {
         { ';', mode = { 'n', 'x' } },
