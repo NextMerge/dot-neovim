@@ -1298,6 +1298,13 @@ require('lazy').setup({
         additional_vim_regex_highlighting = { 'ruby' },
       },
       indent = { enable = true, disable = { 'ruby' } },
+      incremental_selection = {
+        enable = true,
+        keymaps = {
+          node_incremental = 'v',
+          node_decremental = 'V',
+        },
+      },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
     -- with nvim-treesitter. You should go explore a few and see what interests you:
@@ -1507,23 +1514,6 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>tg', function()
         lazygit:toggle()
       end, { desc = '[T]oggle [L]azygit' })
-    end,
-  },
-  { -- Smarter visual grabbing around LSP objects
-    'RRethy/nvim-treesitter-textsubjects',
-    config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('nvim-treesitter.configs').setup {
-        textsubjects = {
-          enable = true,
-          prev_selection = ',', -- (Optional) keymap to select the previous selection
-          keymaps = {
-            ['.'] = 'textsubjects-smart',
-            [';'] = 'textsubjects-container-outer',
-            ['i;'] = { 'textsubjects-container-inner', desc = 'Select inside containers (classes, functions, etc.)' },
-          },
-        },
-      }
     end,
   },
 }, {
