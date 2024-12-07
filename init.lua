@@ -158,8 +158,8 @@ vim.opt.cursorline = true
 vim.opt.scrolloff = 10
 
 function vim.getVisualSelection()
-  vim.cmd 'noau normal! "vy"'
-  local text = vim.fn.getreg 'v'
+  vim.cmd('noau normal! "vy"')
+  local text = vim.fn.getreg('v')
   vim.fn.setreg('v', {})
 
   text = string.gsub(text, '\n', '')
@@ -231,7 +231,7 @@ vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = '[E]rror: G
 vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = '[E]rror: Go to [P]revious diagnostic' })
 
 vim.keymap.set('n', '<leader>pv', function()
-  vim.cmd 'Ex'
+  vim.cmd('Ex')
 end, { silent = true, desc = '[P]roject [V]iew' })
 
 vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
@@ -241,7 +241,7 @@ vim.keymap.set('n', '<leader>ox', function()
   vim.cmd(string.format(
     'silent !cursor -r --folder-uri file://%s -g %s:%s:%s',
     vim.fn.getcwd(),
-    vim.fn.expand '%:p',
+    vim.fn.expand('%:p'),
     r,
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
@@ -265,10 +265,10 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
-local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
+local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = 'https://github.com/folke/lazy.nvim.git'
-  local out = vim.fn.system { 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath }
+  local out = vim.fn.system({ 'git', 'clone', '--filter=blob:none', '--branch=stable', lazyrepo, lazypath })
   if vim.v.shell_error ~= 0 then
     error('Error cloning lazy.nvim:\n' .. out)
   end
@@ -443,15 +443,15 @@ require('lazy').setup({
           vim.print = _G.dd -- Override print to use snacks for `:=` command
 
           -- Create some toggle mappings
-          Snacks.toggle.option('spell', { name = 'Spelling' }):map '<leader>us'
-          Snacks.toggle.option('wrap', { name = 'Wrap' }):map '<leader>uw'
-          Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map '<leader>uL'
-          Snacks.toggle.diagnostics():map '<leader>ud'
-          Snacks.toggle.line_number():map '<leader>ul'
-          Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map '<leader>uc'
-          Snacks.toggle.treesitter():map '<leader>uT'
-          Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map '<leader>ub'
-          Snacks.toggle.inlay_hints():map '<leader>uh'
+          Snacks.toggle.option('spell', { name = 'Spelling' }):map('<leader>us')
+          Snacks.toggle.option('wrap', { name = 'Wrap' }):map('<leader>uw')
+          Snacks.toggle.option('relativenumber', { name = 'Relative Number' }):map('<leader>uL')
+          Snacks.toggle.diagnostics():map('<leader>ud')
+          Snacks.toggle.line_number():map('<leader>ul')
+          Snacks.toggle.option('conceallevel', { off = 0, on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 }):map('<leader>uc')
+          Snacks.toggle.treesitter():map('<leader>uT')
+          Snacks.toggle.option('background', { off = 'light', on = 'dark', name = 'Dark Background' }):map('<leader>ub')
+          Snacks.toggle.inlay_hints():map('<leader>uh')
         end,
       })
     end,
@@ -589,7 +589,7 @@ require('lazy').setup({
         -- `cond` is a condition used to determine whether this plugin should be
         -- installed and loaded.
         cond = function()
-          return vim.fn.executable 'make' == 1
+          return vim.fn.executable('make') == 1
         end,
       },
       { 'nvim-telescope/telescope-ui-select.nvim' },
@@ -638,7 +638,7 @@ require('lazy').setup({
         return string.format('%s\t\t%s', tail, parent)
       end
 
-      require('telescope').setup {
+      require('telescope').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
         --
@@ -675,14 +675,14 @@ require('lazy').setup({
             require('telescope.themes').get_dropdown(),
           },
         },
-      }
+      })
 
       -- Enable Telescope extensions if they are installed
       pcall(require('telescope').load_extension, 'fzf')
       pcall(require('telescope').load_extension, 'ui-select')
 
       -- See `:help telescope.builtin`
-      local builtin = require 'telescope.builtin'
+      local builtin = require('telescope.builtin')
 
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
@@ -695,7 +695,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
       -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
       vim.keymap.set('n', '<leader>sf', function()
-        builtin.find_files {
+        builtin.find_files({
           find_command = {
             'rg',
             '--files',
@@ -705,38 +705,38 @@ require('lazy').setup({
             '--ignore-file',
             '!.env*',
           },
-        }
+        })
       end, { desc = '[S]earch [F]iles' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>z', function()
         -- You can pass additional configuration to Telescope to change the theme, layout, etc.
-        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown({
           winblend = 10,
           previewer = false,
-        })
+        }))
       end, { desc = '[/] Fuzzily search in current buffer' })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
       vim.keymap.set('n', '<leader>s/', function()
-        builtin.live_grep {
+        builtin.live_grep({
           grep_open_files = true,
           prompt_title = 'Live Grep in Open Files',
-        }
+        })
       end, { desc = '[S]earch [/] in Open Files' })
 
       -- Shortcut for searching your Neovim configuration files
       vim.keymap.set('n', '<leader>sn', function()
-        builtin.find_files {
-          cwd = vim.fn.stdpath 'config',
+        builtin.find_files({
+          cwd = vim.fn.stdpath('config'),
           find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' },
-        }
+        })
       end, { desc = '[S]earch [N]eovim files' })
 
       vim.keymap.set('v', '<leader>sg', function()
         local text = vim.getVisualSelection()
-        builtin.live_grep { default_text = text }
+        builtin.live_grep({ default_text = text })
       end, { desc = '[S]earch [G]rep in Selection' })
     end,
   },
@@ -853,7 +853,7 @@ require('lazy').setup({
           end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
 
           vim.keymap.set('n', '<leader>ce', function()
-            vim.cmd 'EslintFixAll'
+            vim.cmd('EslintFixAll')
           end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
 
           map('<leader>ct', vim.lsp.buf.type_definition, '[C]ode [T]ype definition')
@@ -886,7 +886,7 @@ require('lazy').setup({
               group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
               callback = function(event2)
                 vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                vim.api.nvim_clear_autocmds({ group = 'kickstart-lsp-highlight', buffer = event2.buf })
               end,
             })
           end
@@ -897,7 +897,7 @@ require('lazy').setup({
           -- This may be unwanted, since they displace some of your code
           if client and client.supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint) then
             map('<leader>th', function()
-              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf })
+              vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = event.buf }))
             end, '[T]oggle Inlay [H]ints')
           end
         end,
@@ -989,9 +989,9 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'stylua', -- Used to format Lua code
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup({ ensure_installed = ensure_installed })
 
-      require('mason-lspconfig').setup {
+      require('mason-lspconfig').setup({
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
@@ -1002,7 +1002,7 @@ require('lazy').setup({
             require('lspconfig')[server_name].setup(server)
           end,
         },
-      }
+      })
     end,
   },
 
@@ -1015,7 +1015,7 @@ require('lazy').setup({
         '<leader>f',
         function()
           vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
-          require('conform').format { async = true, lsp_format = 'fallback' }
+          require('conform').format({ async = true, lsp_format = 'fallback' })
         end,
         mode = '',
         desc = '[F]ormat buffer',
@@ -1052,7 +1052,7 @@ require('lazy').setup({
           -- Build Step is needed for regex support in snippets.
           -- This step is not supported in many windows environments.
           -- Remove the below condition to re-enable on windows.
-          if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then
+          if vim.fn.has('win32') == 1 or vim.fn.executable('make') == 0 then
             return
           end
           return 'make install_jsregexp'
@@ -1082,11 +1082,11 @@ require('lazy').setup({
     },
     config = function()
       -- See `:help cmp`
-      local cmp = require 'cmp'
-      local luasnip = require 'luasnip'
-      luasnip.config.setup {}
+      local cmp = require('cmp')
+      local luasnip = require('luasnip')
+      luasnip.config.setup({})
 
-      cmp.setup {
+      cmp.setup({
         snippet = {
           expand = function(args)
             luasnip.lsp_expand(args.body)
@@ -1098,7 +1098,7 @@ require('lazy').setup({
         -- chosen, you will need to read `:help ins-completion`
         --
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
-        mapping = cmp.mapping.preset.insert {
+        mapping = cmp.mapping.preset.insert({
           -- Select the [n]ext item
           ['<C-n>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
@@ -1111,7 +1111,7 @@ require('lazy').setup({
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
           --  This will expand snippets if the LSP sent a snippet.
-          ['<C-y>'] = cmp.mapping.confirm { select = true },
+          ['<C-y>'] = cmp.mapping.confirm({ select = true }),
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
@@ -1122,7 +1122,7 @@ require('lazy').setup({
           -- Manually trigger a completion from nvim-cmp.
           --  Generally you don't need this, because nvim-cmp will display
           --  completions whenever it has completion options available.
-          ['<C-Space>'] = cmp.mapping.complete {},
+          ['<C-Space>'] = cmp.mapping.complete({}),
 
           -- Think of <c-l> as moving to the right of your snippet expansion.
           --  So if you have a snippet that's like:
@@ -1145,7 +1145,7 @@ require('lazy').setup({
 
           -- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
           --    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
-        },
+        }),
         sources = {
           {
             name = 'lazydev',
@@ -1156,7 +1156,7 @@ require('lazy').setup({
           { name = 'luasnip' },
           { name = 'path' },
         },
-      }
+      })
 
       -- Completion for command mode
       cmp.setup.cmdline(':', {
@@ -1186,10 +1186,10 @@ require('lazy').setup({
       -- Load the colorscheme here.
       -- Like many other themes, this one has different styles, and you could load
       -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme('tokyonight-night')
 
       -- You can configure highlights by doing something like:
-      vim.cmd.hi 'Comment gui=none'
+      vim.cmd.hi('Comment gui=none')
     end,
   },
 
@@ -1210,14 +1210,14 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      require('mini.ai').setup({ n_lines = 500 })
 
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
       -- - sd'   - [S]urround [D]elete [']quotes
       -- - sr)'  - [S]urround [R]eplace [)] [']
-      require('mini.surround').setup {
+      require('mini.surround').setup({
         mappings = {
           add = ';a', -- Add surrounding in Normal and Visual modes
           delete = ';d', -- Delete surrounding
@@ -1227,14 +1227,14 @@ require('lazy').setup({
           replace = ';r', -- Replace surrounding
           update_n_lines = ';n', -- Update `n_lines`
         },
-      }
+      })
 
       -- Simple and easy statusline.
       --  You could remove this setup call if you don't like it,
       --  and try some other statusline plugin
-      local statusline = require 'mini.statusline'
+      local statusline = require('mini.statusline')
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup({ use_icons = vim.g.have_nerd_font })
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -1245,8 +1245,8 @@ require('lazy').setup({
       end
 
       -- Indentation guides for current scope
-      local indent_scope = require 'mini.indentscope'
-      indent_scope.setup {
+      local indent_scope = require('mini.indentscope')
+      indent_scope.setup({
         draw = { delay = 0, animation = indent_scope.gen_animation.none() },
         mappings = {
           object_scope = '',
@@ -1254,7 +1254,7 @@ require('lazy').setup({
           goto_top = '',
           goto_bottom = '',
         },
-      }
+      })
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1309,12 +1309,12 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-  require 'kickstart.plugins.debug',
+  require('kickstart.plugins.debug'),
   -- require 'kickstart.plugins.indent_line',
-  require 'kickstart.plugins.lint',
-  require 'kickstart.plugins.autopairs',
+  require('kickstart.plugins.lint'),
+  require('kickstart.plugins.autopairs'),
   -- require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require('kickstart.plugins.gitsigns'), -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -1337,7 +1337,7 @@ require('lazy').setup({
     cmd = 'Copilot',
     event = 'InsertEnter',
     config = function()
-      require('copilot').setup {
+      require('copilot').setup({
         suggestion = {
           auto_trigger = true,
           hide_during_completion = false,
@@ -1346,7 +1346,7 @@ require('lazy').setup({
             dismiss = '<C-[>',
           },
         },
-      }
+      })
     end,
   },
   { -- Notifications and turning command mode into a command palette
@@ -1377,17 +1377,20 @@ require('lazy').setup({
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
-      routes = {
-        { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
-          filter = {
-            event = 'notify',
-            find = 'No information available',
-          },
-          opts = {
-            skip = true,
-          },
-        },
+      messages = {
+        enabled = false,
       },
+      -- routes = {
+      --   { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
+      --     filter = {
+      --       event = 'notify',
+      --       find = 'No information available',
+      --     },
+      --     opts = {
+      --       skip = true,
+      --     },
+      --   },
+      -- },
     },
   },
   { -- Bookmarks files
@@ -1433,11 +1436,11 @@ require('lazy').setup({
         vim.opt.title = true
       end
 
-      require('toggleterm').setup {
+      require('toggleterm').setup({
         open_mapping = [[<c-\>]],
         on_open = on_open,
         on_close = on_close,
-      }
+      })
 
       function _G.set_terminal_keymaps()
         local opts = { buffer = 0 }
@@ -1449,50 +1452,29 @@ require('lazy').setup({
       end
 
       -- if you only want these mappings for toggle term use term://*toggleterm#* instead
-      vim.cmd 'autocmd! TermOpen term://* lua set_terminal_keymaps()'
+      vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 
       local Terminal = require('toggleterm.terminal').Terminal
 
-      local generic = Terminal:new {
+      local generic = Terminal:new({
         direction = 'float',
         float_opts = {
           border = 'double',
         },
         on_open = function(term)
           on_open()
-          vim.cmd 'startinsert!'
+          vim.cmd('startinsert!')
           vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
         end,
         on_close = function()
           on_close()
-          vim.cmd 'startinsert!'
+          vim.cmd('startinsert!')
         end,
-      }
-
-      local lazygit = Terminal:new {
-        cmd = 'lazygit',
-        dir = 'git_dir',
-        direction = 'float',
-        float_opts = {
-          border = 'double',
-        },
-        on_open = function(term)
-          on_open()
-          vim.cmd 'startinsert!'
-          vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
-        end,
-        on_close = function()
-          on_close()
-          vim.cmd 'startinsert!'
-        end,
-      }
+      })
 
       vim.keymap.set('n', '<leader>tt', function()
         generic:toggle()
       end, { desc = '[T]oggle [T]erminal' })
-      vim.keymap.set('n', '<leader>tg', function()
-        lazygit:toggle()
-      end, { desc = '[T]oggle [L]azygit' })
     end,
   },
 }, {
