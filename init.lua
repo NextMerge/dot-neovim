@@ -940,7 +940,6 @@ require('lazy').setup({
         --    https://github.com/pmizio/typescript-tools.nvim
         --
         -- But for many setups, the LSP (`ts_ls`) will work just fine
-        ts_ls = {},
         eslint = {
           -- https://github.com/stevearc/conform.nvim/issues/520#issuecomment-2344591605
           capabilities = {
@@ -951,6 +950,7 @@ require('lazy').setup({
             },
           },
         },
+        ts_ls = {},
         tailwindcss = {},
 
         jsonls = {},
