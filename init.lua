@@ -1431,6 +1431,7 @@ require('lazy').setup({
     dependencies = { 'tpope/vim-repeat' },
     config = function()
       require('leap').add_default_mappings()
+      vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'NonText' })
     end,
   },
   { -- Customizable terminals
