@@ -1390,17 +1390,17 @@ require('lazy').setup({
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
         lsp_doc_border = false, -- add a border to hover docs and signature help
       },
-      -- routes = {
-      --   { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
-      --     filter = {
-      --       event = 'notify',
-      --       find = 'No information available',
-      --     },
-      --     opts = {
-      --       skip = true,
-      --     },
-      --   },
-      -- },
+      routes = {
+        { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
+          filter = {
+            event = 'notify',
+            find = 'No information available',
+          },
+          opts = {
+            skip = true,
+          },
+        },
+      },
     },
   },
   { -- Bookmarks files
