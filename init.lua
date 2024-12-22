@@ -222,7 +222,9 @@ vim.keymap.set({ 'n', 'v' }, 'x', '"_x', { desc = 'Delete character without copy
 vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
 vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<S-C-M-y>', ':let @+=expand("%")<CR>', { desc = 'Copy relative file path' })
+vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = '[Y]ank [F]ilepath' })
+vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = '[Y]ank Absolute [F]ilepath' })
+vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = '[Y]ank [D]irectory' })
 
 vim.keymap.set('n', 'H', vim.lsp.buf.hover, { silent = true, desc = '[H]over' })
 
@@ -313,13 +315,12 @@ require('lazy').setup({
           ---@type snacks.dashboard.Item[]
           keys = {
             { icon = ' ', key = 'f', desc = 'Find File', action = ":lua Snacks.dashboard.pick('files')" },
-            { icon = ' ', key = 'n', desc = 'New File', action = ':ene | startinsert' },
             { icon = ' ', key = 'g', desc = 'Find Text', action = ":lua Snacks.dashboard.pick('live_grep')" },
             { icon = ' ', key = 'r', desc = 'Recent Files', action = ":lua Snacks.dashboard.pick('oldfiles')" },
             {
               icon = ' ',
-              key = 'c',
-              desc = 'Config',
+              key = 'n',
+              desc = 'Neovim Config',
               action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config'), find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' }})",
             },
             { icon = '󰒲 ', key = 'L', desc = 'Lazy', action = ':Lazy', enabled = package.loaded.lazy ~= nil },
@@ -550,6 +551,7 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n' } },
         { '<leader>u', group = '[U]ser', mode = { 'n' } },
+        { '<leader>y', group = '[Y]ank' },
       },
       triggers = {
         { ';', mode = { 'n', 'x' } },
@@ -1061,6 +1063,7 @@ require('lazy').setup({
         json = { 'prettierd', 'prettier', stop_after_first = true },
         zsh = { 'shfmt' },
         sh = { 'shfmt' },
+        css = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1348,7 +1351,7 @@ require('lazy').setup({
   --
   require('kickstart.plugins.debug'),
   -- require 'kickstart.plugins.indent_line',
-  require('kickstart.plugins.lint'),
+  -- require('kickstart.plugins.lint'),
   require('kickstart.plugins.autopairs'),
   -- require 'kickstart.plugins.neo-tree',
   require('kickstart.plugins.gitsigns'), -- adds gitsigns recommend keymaps
