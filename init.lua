@@ -1495,6 +1495,7 @@ require('lazy').setup({
       local Terminal = require('toggleterm.terminal').Terminal
 
       local generic = Terminal:new({
+        hidden = true,
         direction = 'float',
         float_opts = {
           border = 'double',
@@ -1510,7 +1511,7 @@ require('lazy').setup({
         end,
       })
 
-      vim.keymap.set('n', '<leader>tt', function()
+      vim.keymap.set({ 'n', 't' }, '<M-C-S-T>', function()
         generic:toggle()
       end, { desc = '[T]oggle [T]erminal' })
     end,
