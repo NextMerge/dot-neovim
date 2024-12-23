@@ -195,8 +195,8 @@ vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 
 -- So leap can't fire accidentally
-vim.keymap.set('v', 's', '<Nop>')
-vim.keymap.set('v', 'S', '<Nop>')
+vim.keymap.set('x', 's', '<Nop>')
+vim.keymap.set('x', 'S', '<Nop>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -207,38 +207,38 @@ vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
-vim.keymap.set({ 'n', 'v' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-vim.keymap.set({ 'n', 'v' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
+vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
 
-vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
-vim.keymap.set('v', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
+vim.keymap.set('x', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
+vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
 
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 
-vim.keymap.set('v', '<leader>p', '"_dP', { desc = "[P]aste over highlighted text but don't overwrite the copy register" })
-vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d]], { desc = '[D]elete without writing to the copy register' })
-vim.keymap.set({ 'n', 'v' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = "[P]aste over highlighted text but don't overwrite the copy register" })
+vim.keymap.set('x', '<leader>d', [["_d]], { desc = '[D]elete without writing to the copy register' })
+vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
-vim.keymap.set('n', 'U', '<C-r>', { noremap = true })
-vim.keymap.set('n', '<C-r>', 'U', { noremap = true })
+vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
+vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = '[Y]ank [F]ilepath' })
-vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = '[Y]ank Absolute [F]ilepath' })
-vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = '[Y]ank [D]irectory' })
+vim.keymap.set({ 'n', 'x' }, '<leader>yf', ':let @+=expand("%")<CR>', { desc = '[Y]ank [F]ilepath' })
+vim.keymap.set({ 'n', 'x' }, '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = '[Y]ank Absolute [F]ilepath' })
+vim.keymap.set({ 'n', 'x' }, '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = '[Y]ank [D]irectory' })
 
-vim.keymap.set('n', 'H', vim.lsp.buf.hover, { silent = true, desc = '[H]over' })
+vim.keymap.set({ 'n', 'x' }, 'H', vim.lsp.buf.hover, { silent = true, desc = '[H]over' })
 
 vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = '[E]rror: [H]over diagnostic' })
 vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = '[E]rror: Go to [N]ext diagnostic' })
 vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = '[E]rror: Go to [P]revious diagnostic' })
 
-vim.keymap.set('n', '<leader>pv', function()
+vim.keymap.set({ 'n', 'x' }, '<leader>pv', function()
   vim.cmd('Ex')
 end, { silent = true, desc = '[P]roject [V]iew' })
 
-vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
+vim.keymap.set({ 'n', 'v' }, '<leader><leader>', ':', { desc = 'Command Prompt' })
 
-vim.keymap.set('n', '<leader>ox', function()
+vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
   vim.cmd(string.format(
     'silent !cursor -r --folder-uri file://%s -g %s:%s:%s',
@@ -249,7 +249,7 @@ vim.keymap.set('n', '<leader>ox', function()
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
 
-vim.keymap.set('n', '<C-]>', '<Nop>', { silent = true })
+vim.keymap.set({ 'n', 'x' }, '<C-]>', '<Nop>', { silent = true })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -546,12 +546,12 @@ require('lazy').setup({
         { '<leader>d', group = '[D]ocument' },
         { '<leader>e', group = '[E]rror' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>p', group = '[P]roject' },
+        { '<leader>p', group = '[P]roject', mode = { 'n', 'x' } },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
-        { '<leader>g', group = '[G]it', mode = { 'n' } },
-        { '<leader>u', group = '[U]ser', mode = { 'n' } },
-        { '<leader>y', group = '[Y]ank', mode = { 'n' } },
+        { '<leader>g', group = '[G]it', mode = { 'n', 'x' } },
+        { '<leader>u', group = '[U]ser', mode = { 'n', 'x' } },
+        { '<leader>y', group = '[Y]ank', mode = { 'n', 'x' } },
       },
       triggers = {
         { ';', mode = { 'n', 'x' } },
@@ -732,7 +732,7 @@ require('lazy').setup({
         })
       end, { desc = '[S]earch [N]eovim files' })
 
-      vim.keymap.set('v', '<leader>sg', function()
+      vim.keymap.set('x', '<leader>sg', function()
         local text = vim.getVisualSelection()
         builtin.live_grep({ default_text = text })
       end, { desc = '[S]earch [G]rep in Selection' })
