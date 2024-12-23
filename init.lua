@@ -236,7 +236,7 @@ vim.keymap.set({ 'n', 'x' }, '<leader>pv', function()
   vim.cmd('Ex')
 end, { silent = true, desc = '[P]roject [V]iew' })
 
-vim.keymap.set({ 'n', 'v' }, '<leader><leader>', ':', { desc = 'Command Prompt' })
+vim.keymap.set({ 'n', 'x' }, '<leader><leader>', ':', { desc = 'Command Prompt' })
 
 vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
