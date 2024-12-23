@@ -503,6 +503,7 @@ require('lazy').setup({
     'folke/which-key.nvim',
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
+      delay = 0,
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
@@ -548,7 +549,7 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>p', group = '[P]roject', mode = { 'n', 'x' } },
         { '<leader>t', group = '[T]oggle' },
-        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+        { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'x' } },
         { '<leader>g', group = '[G]it', mode = { 'n', 'x' } },
         { '<leader>u', group = '[U]ser', mode = { 'n', 'x' } },
         { '<leader>y', group = '[Y]ank', mode = { 'n', 'x' } },
