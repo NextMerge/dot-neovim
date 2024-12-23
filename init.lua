@@ -551,7 +551,7 @@ require('lazy').setup({
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n' } },
         { '<leader>u', group = '[U]ser', mode = { 'n' } },
-        { '<leader>y', group = '[Y]ank' },
+        { '<leader>y', group = '[Y]ank', mode = { 'n' } },
       },
       triggers = {
         { ';', mode = { 'n', 'x' } },
