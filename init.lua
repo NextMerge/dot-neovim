@@ -629,12 +629,16 @@ require('lazy').setup({
       })
 
       local function filenameFirst(_, path)
-        local tail = vim.fs.basename(path)
-        local parent = vim.fs.dirname(path)
+        local Path = require('plenary.path')
+        local utils = require('telescope.utils')
+        local cwd = vim.fn.getcwd()
+
+        local tail = utils.path_tail(path)
+        local parent = Path:new(path:sub(1, -(#tail + 2))):make_relative(cwd)
         if parent == '.' then
           return tail
         end
-        return string.format('%s\t\t%s', tail, parent)
+        return string.format('%s\t\t%s', tail, Path:new(parent):shorten(3))
       end
 
       require('telescope').setup({
@@ -656,6 +660,7 @@ require('lazy').setup({
           },
           lsp_references = {
             path_display = filenameFirst,
+            show_line = false,
           },
           diagnostics = {
             path_display = filenameFirst,
