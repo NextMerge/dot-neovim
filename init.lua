@@ -1433,22 +1433,31 @@ require('lazy').setup({
             skip = true,
           },
         },
+        -- { -- error when attempting to select a grapple.nvim index that isn't defined
+        --   filter = {
+        --     error = true,
+        --     find = 'tag index is out[-]of[-]bounds:',
+        --   },
+        --   opts = {
+        --     skip = true,
+        --   },
+        -- },
       },
     },
   },
-  { -- Bookmarks files
-    'otavioschwanck/arrow.nvim',
-    opts = {
-      show_icons = true,
-      leader_key = "'",
-      buffer_leader_key = 'm', -- Per Buffer Mappings
-      mappings = {
-        toggle = 'g',
-        open_vertical = '|',
-      },
-      index_keys = 'htnswvzHTNSWVZ123456789',
-    },
-  },
+  -- { -- Bookmarks files
+  --   'otavioschwanck/arrow.nvim',
+  --   opts = {
+  --     show_icons = true,
+  --     leader_key = "'",
+  --     buffer_leader_key = 'm', -- Per Buffer Mappings
+  --     mappings = {
+  --       toggle = 'g',
+  --       open_vertical = '|',
+  --     },
+  --     index_keys = 'htnswvzHTNSWVZ123456789',
+  --   },
+  -- },
   { -- Autosave
     'okuuva/auto-save.nvim',
     cmd = 'ASToggle', -- optional for lazy loading on command
@@ -1521,6 +1530,22 @@ require('lazy').setup({
         generic:toggle()
       end, { desc = '[T]oggle [T]erminal' })
     end,
+  },
+  { -- File bookmark
+    'cbochs/grapple.nvim',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons', lazy = true },
+    },
+    event = { 'BufReadPost', 'BufNewFile' },
+    cmd = 'Grapple',
+    opts = {
+      scope = 'cwd',
+      quick_select = 'htnsmwvz',
+    },
+    keys = {
+      { 'm', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
+      { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
+    },
   },
 }, {
   ui = {
