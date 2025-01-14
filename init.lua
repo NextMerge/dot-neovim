@@ -504,6 +504,10 @@ require('lazy').setup({
     event = 'VimEnter', -- Sets the loading event to 'VimEnter'
     opts = {
       delay = 0,
+      keys = {
+        scroll_down = '<PageDown>',
+        scroll_up = '<PageUp>',
+      },
       icons = {
         -- set icon mappings to true if you have a Nerd Font
         mappings = vim.g.have_nerd_font,
