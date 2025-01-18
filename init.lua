@@ -221,23 +221,23 @@ vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copy
 vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
 vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set({ 'n', 'x' }, '<leader>yf', ':let @+=expand("%")<CR>', { desc = '[Y]ank [F]ilepath' })
-vim.keymap.set({ 'n', 'x' }, '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = '[Y]ank Absolute [F]ilepath' })
-vim.keymap.set({ 'n', 'x' }, '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = '[Y]ank [D]irectory' })
+vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank [F]ilepath' })
+vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute [F]ilepath' })
+vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank [D]irectory' })
 
-vim.keymap.set({ 'n', 'x' }, 'H', vim.lsp.buf.hover, { silent = true, desc = '[H]over' })
+vim.keymap.set('n', 'H', vim.lsp.buf.hover, { silent = true, desc = 'Hover' })
 
-vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = '[E]rror: [H]over diagnostic' })
-vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = '[E]rror: Go to [N]ext diagnostic' })
-vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = '[E]rror: Go to [P]revious diagnostic' })
+vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
+vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = 'Error: Go to [N]ext diagnostic' })
+vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = 'Error: Go to [P]revious diagnostic' })
 
-vim.keymap.set({ 'n', 'x' }, '<leader>pv', function()
+vim.keymap.set('n', '<leader>pv', function()
   vim.cmd('Ex')
 end, { silent = true, desc = '[P]roject [V]iew' })
 
-vim.keymap.set({ 'n', 'x' }, '<leader><leader>', ':', { desc = 'Command Prompt' })
+vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
 
-vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
+vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
   vim.cmd(string.format(
     'silent !cursor -r --folder-uri file://%s -g %s:%s:%s',
@@ -534,16 +534,16 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>e', group = '[E]rror' },
-        { '<leader>s', group = '[S]earch' },
-        { '<leader>p', group = '[P]roject', mode = { 'n', 'x' } },
-        { '<leader>t', group = '[T]oggle' },
+        { '<leader>c', group = 'Code' },
+        { '<leader>d', group = 'Document' },
+        { '<leader>e', group = 'Error' },
+        { '<leader>s', group = 'Search' },
+        { '<leader>p', group = 'Project' },
+        { '<leader>t', group = 'Toggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'x' } },
-        { '<leader>g', group = '[G]it', mode = { 'n', 'x' } },
-        { '<leader>u', group = '[U]ser', mode = { 'n', 'x' } },
-        { '<leader>y', group = '[Y]ank', mode = { 'n', 'x' } },
+        { '<leader>g', group = 'Git' },
+        { '<leader>u', group = 'User' },
+        { '<leader>y', group = 'Yank' },
       },
       triggers = {
         { ';', mode = { 'n', 'x' } },
@@ -728,11 +728,6 @@ require('lazy').setup({
           find_command = { 'rg', '--files', '--type', 'lua', '--sort', 'path' },
         })
       end, { desc = '[S]earch [N]eovim files' })
-
-      vim.keymap.set('x', '<leader>sg', function()
-        local text = vim.getVisualSelection()
-        builtin.live_grep({ default_text = text })
-      end, { desc = '[S]earch [G]rep in Selection' })
     end,
   },
 
@@ -829,29 +824,29 @@ require('lazy').setup({
 
           -- Fuzzy find all the symbols in your current document.
           --  Symbols are things like variables, functions, types, etc.
-          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, '[D]ocument [S]ymbols')
+          map('<leader>ds', require('telescope.builtin').lsp_document_symbols, 'Document [S]ymbols')
 
           -- Fuzzy find all the symbols in your current workspace.
           --  Similar to document symbols, except searches over your entire project.
-          map('<leader>ps', require('telescope.builtin').lsp_dynamic_workspace_symbols, '[P]roject [S]ymbols')
+          map('<leader>ps', require('telescope.builtin').lsp_dynamic_workspace_symbols, 'Project [S]ymbols')
 
           -- Rename the variable under your cursor.
           --  Most Language Servers support renaming across files, etc.
-          map('<leader>cr', vim.lsp.buf.rename, '[C]ode [R]ename')
+          map('<leader>cr', vim.lsp.buf.rename, 'Code [R]ename')
 
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
-          map('<leader>ca', vim.lsp.buf.code_action, '[C]ode [A]ction', { 'n', 'x' })
+          map('<leader>ca', vim.lsp.buf.code_action, 'Code [A]ction', 'n')
 
           vim.keymap.set('n', '<leader>cc', function()
             require('treesitter-context').go_to_context(vim.v.count1)
-          end, { silent = true, desc = 'Go up [C]ode [C]ontext' })
+          end, { silent = true, desc = 'Go up Code [C]ontext' })
 
           vim.keymap.set('n', '<leader>ce', function()
             vim.cmd('EslintFixAll')
-          end, { silent = true, desc = '[E]slint: Fix All in [C]ode' })
+          end, { silent = true, desc = 'Eslint: Fix All in Code' })
 
-          map('<leader>ct', vim.lsp.buf.type_definition, '[C]ode [T]ype definition')
+          map('<leader>ct', vim.lsp.buf.type_definition, 'Code [T]ype definition')
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -1043,7 +1038,6 @@ require('lazy').setup({
           vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
           require('conform').format({ async = true, lsp_format = 'fallback' })
         end,
-        mode = '',
         desc = '[F]ormat buffer',
       },
     },
@@ -1288,12 +1282,6 @@ require('lazy').setup({
       local indent_scope = require('mini.indentscope')
       indent_scope.setup({
         draw = { delay = 0, animation = indent_scope.gen_animation.none() },
-        mappings = {
-          object_scope = '',
-          object_scope_with_border = '',
-          goto_top = '',
-          goto_bottom = '',
-        },
       })
 
       -- ... and there is more!
@@ -1319,10 +1307,6 @@ require('lazy').setup({
       indent = { enable = true, disable = { 'ruby' } },
       incremental_selection = {
         enable = true,
-        keymaps = {
-          node_incremental = 'v',
-          node_decremental = 'V',
-        },
       },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
@@ -1578,7 +1562,7 @@ require('lazy').setup({
       },
     },
   },
-  { 'dmmulroy/tsc.nvim', ft = { 'typescript', 'typescriptreact' }, opts = {} },
+  { 'dmmulroy/tsc.nvim', cmd = 'TSC', opts = {} },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
