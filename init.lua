@@ -546,7 +546,7 @@ require('lazy').setup({
         { '<leader>y', group = 'Yank' },
       },
       triggers = {
-        { ';', mode = { 'n', 'x' } },
+        { 's', mode = { 'n', 'x' } },
         { '<leader>', mode = { 'n', 'x' } },
         { 'g', mode = { 'n', 'x' } },
         { ']', mode = { 'n', 'x' } },
@@ -1253,13 +1253,13 @@ require('lazy').setup({
       -- - sr)'  - [S]urround [R]eplace [)] [']
       require('mini.surround').setup({
         mappings = {
-          add = ';a', -- Add surrounding in Normal and Visual modes
-          delete = ';d', -- Delete surrounding
-          find = ';f', -- Find surrounding (to the right)
-          find_left = ';F', -- Find surrounding (to the left)
-          highlight = ';h', -- Highlight surrounding
-          replace = ';r', -- Replace surrounding
-          update_n_lines = ';n', -- Update `n_lines`
+          add = 'sa', -- Add surrounding in Normal and Visual modes
+          delete = 'sd', -- Delete surrounding
+          find = 'sf', -- Find surrounding (to the right)
+          find_left = 'sF', -- Find surrounding (to the left)
+          highlight = 'sh', -- Highlight surrounding
+          replace = 'sr', -- Replace surrounding
+          update_n_lines = 'sn', -- Update `n_lines`
         },
       })
 
@@ -1450,7 +1450,9 @@ require('lazy').setup({
     'ggandor/leap.nvim',
     dependencies = { 'tpope/vim-repeat' },
     config = function()
-      require('leap').add_default_mappings()
+      vim.keymap.set({ 'n', 'x', 'o' }, 'm', '<Plug>(leap-forward)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'M', '<Plug>(leap-backward)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'gm', '<Plug>(leap-from-window)')
       vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'NonText' })
     end,
   },
@@ -1521,7 +1523,7 @@ require('lazy').setup({
       quick_select = 'htnsmwvz',
     },
     keys = {
-      { 'm', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
+      { '<leader>m', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
       { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
     },
   },
