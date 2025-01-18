@@ -335,6 +335,11 @@ require('lazy').setup({
       statuscolumn = { enabled = true },
       words = { enabled = false },
       terminal = { enabled = false },
+      scratch = {
+        filekey = {
+          branch = false,
+        },
+      },
       styles = {
         notification = {
           wo = { wrap = true }, -- Wrap notifications
@@ -342,6 +347,21 @@ require('lazy').setup({
       },
     },
     keys = {
+      {
+        '<leader>.',
+        function()
+          Snacks.scratch()
+        end,
+        desc = 'Toggle Scratch Buffer',
+      },
+      {
+        '<leader>S',
+        function()
+          Snacks.scratch.select()
+        end,
+        desc = 'Select Scratch Buffer',
+      },
+
       {
         '<leader>n',
         function()
