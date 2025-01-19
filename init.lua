@@ -205,7 +205,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- Swap around some keys
 vim.keymap.set('n', 'q', 'z')
 vim.keymap.set('n', 'z', 'q')
-vim.keymap.set('n', '"', ':', { desc = 'Command Prompt' })
+vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
 vim.keymap.set({ 'n', 'x' }, 'Q', '<Nop>')
 vim.keymap.set({ 'n', 'x' }, 'QQ', 'ZZ', { desc = 'Save and quit' })
 
@@ -240,10 +240,11 @@ end, { silent = true, desc = '[P]roject [V]iew' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
+  local escaped_path = vim.fn.shellescape(vim.fn.expand('%:p'))
   vim.cmd(string.format(
     'silent !cursor -r --folder-uri file://%s -g %s:%s:%s',
     vim.fn.getcwd(),
-    vim.fn.expand('%:p'),
+    escaped_path,
     r,
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
@@ -666,6 +667,15 @@ require('lazy').setup({
           find_files = {
             path_display = filenameFirst,
             previewer = false,
+            find_command = {
+              'rg',
+              '--files',
+              '--hidden',
+              '--glob',
+              '!**/.git/*',
+              '--ignore-file',
+              '!.env*',
+            },
           },
           live_grep = {
             path_display = filenameFirst,
@@ -702,27 +712,14 @@ require('lazy').setup({
 
       vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
       vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      -- vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
       vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      -- vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+      vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      -- vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
-      vim.keymap.set('n', '<leader>sf', function()
-        builtin.find_files({
-          find_command = {
-            'rg',
-            '--files',
-            '--hidden',
-            '--glob',
-            '!**/.git/*',
-            '--ignore-file',
-            '!.env*',
-          },
-        })
-      end, { desc = '[S]earch [F]iles' })
+      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]ecent Files' })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Resume ("." for repeat)' })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
       vim.keymap.set('n', '<leader>z', function()
@@ -1205,7 +1202,15 @@ require('lazy').setup({
       vim.cmd.hi('Comment gui=none')
     end,
     opts = {
-      integrations = { mason = true, leap = true, copilot_vim = true, snacks = true, which_key = true },
+      integrations = {
+        mason = true,
+        leap = true,
+        noice = false,
+        copilot_vim = true,
+        snacks = true,
+        lsp_trouble = true,
+        which_key = true,
+      },
     },
   },
 
