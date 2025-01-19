@@ -202,9 +202,12 @@ vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Swap q and z
+-- Swap around some keys
 vim.keymap.set('n', 'q', 'z')
 vim.keymap.set('n', 'z', 'q')
+vim.keymap.set('n', '"', ':', { desc = 'Command Prompt' })
+vim.keymap.set({ 'n', 'x' }, 'Q', '<Nop>')
+vim.keymap.set({ 'n', 'x' }, 'QQ', 'ZZ', { desc = 'Save and quit' })
 
 vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
 vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
@@ -234,8 +237,6 @@ vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = 'Error: Go 
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd('Ex')
 end, { silent = true, desc = '[P]roject [V]iew' })
-
-vim.keymap.set('n', '<leader><leader>', ':', { desc = 'Command Prompt' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
