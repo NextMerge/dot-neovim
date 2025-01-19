@@ -188,14 +188,10 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 
 -- TIP: Disable arrow keys in normal mode
-vim.keymap.set('n', 'h', '<cmd>echo "Use arrows to move!!"<CR>')
-vim.keymap.set('n', 'l', '<cmd>echo "Use arrows to move!!"<CR>')
+-- vim.keymap.set('n', '<Left>', '<cmd>echo "Use h to move!!"<CR>')
+-- vim.keymap.set('n', '<Right>', '<cmd>echo "Use l to move!!"<CR>')
 vim.keymap.set('n', '<up>', '<cmd>echo "Use k to move!!"<CR>')
 vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
-
--- So leap can't fire accidentally
-vim.keymap.set('x', 's', '<Nop>')
-vim.keymap.set('x', 'S', '<Nop>')
 
 -- Keybinds to make split navigation easier.
 --  Use CTRL+<hjkl> to switch between windows
@@ -205,6 +201,10 @@ vim.keymap.set('n', '<C-Left>', '<C-w><C-h>', { desc = 'Move focus to the left w
 vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+-- Swap q and z
+vim.keymap.set('n', 'q', 'z')
+vim.keymap.set('n', 'z', 'q')
 
 vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
 vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
@@ -1440,19 +1440,6 @@ require('lazy').setup({
       },
     },
   },
-  -- { -- Bookmarks files
-  --   'otavioschwanck/arrow.nvim',
-  --   opts = {
-  --     show_icons = true,
-  --     leader_key = "'",
-  --     buffer_leader_key = 'm', -- Per Buffer Mappings
-  --     mappings = {
-  --       toggle = 'g',
-  --       open_vertical = '|',
-  --     },
-  --     index_keys = 'htnswvzHTNSWVZ123456789',
-  --   },
-  -- },
   { -- Autosave
     'okuuva/auto-save.nvim',
     cmd = 'ASToggle', -- optional for lazy loading on command
@@ -1467,10 +1454,17 @@ require('lazy').setup({
     'ggandor/leap.nvim',
     dependencies = { 'tpope/vim-repeat' },
     config = function()
-      vim.keymap.set({ 'n', 'x', 'o' }, 'm', '<Plug>(leap-forward)')
-      vim.keymap.set({ 'n', 'x', 'o' }, 'M', '<Plug>(leap-backward)')
-      vim.keymap.set({ 'n', 'x', 'o' }, 'gm', '<Plug>(leap-from-window)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'h', '<Plug>(leap-forward)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'H', '<Plug>(leap-backward)')
+      vim.keymap.set({ 'n', 'x', 'o' }, 'gh', '<Plug>(leap-from-window)')
+
       vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'NonText' })
+
+      local leap = require('leap')
+      -- Define equivalence classes for brackets and quotes, in addition to
+      -- the default whitespace group.
+      leap.opts.equivalence_classes = { ' \t\r\n', '([{', ')]}', '\'"`' }
+      leap.opts.safe_labels = 'hmnutqfl/SFNLHMUGTQ?'
     end,
   },
   { -- Customizable terminals
