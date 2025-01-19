@@ -1582,6 +1582,12 @@ require('lazy').setup({
     },
   },
   { 'dmmulroy/tsc.nvim', cmd = 'TSC', opts = {} },
+  {
+    'rasulomaroff/reactive.nvim',
+    opts = {
+      load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
+    },
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
