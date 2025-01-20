@@ -228,7 +228,7 @@ vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank [F]i
 vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute [F]ilepath' })
 vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank [D]irectory' })
 
-vim.keymap.set('n', 'H', vim.lsp.buf.hover, { silent = true, desc = 'Hover' })
+vim.keymap.set('n', '<leader>h', vim.lsp.buf.hover, { silent = true, desc = 'Hover' })
 
 vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
 vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = 'Error: Go to [N]ext diagnostic' })
@@ -236,7 +236,7 @@ vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = 'Error: Go 
 
 vim.keymap.set('n', '<leader>pv', function()
   vim.cmd('Ex')
-end, { silent = true, desc = '[P]roject [V]iew' })
+end, { silent = true, desc = 'Project [V]iew' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
