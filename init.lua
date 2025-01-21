@@ -228,7 +228,9 @@ vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank [F]i
 vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute [F]ilepath' })
 vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank [D]irectory' })
 
-vim.keymap.set('n', '<leader>h', vim.lsp.buf.hover, { silent = true, desc = 'Hover' })
+vim.keymap.set('n', '<leader>h', function()
+  return vim.lsp.buf.hover() -- Define hover like this so that noice.nvim can inject its own window style
+end, { silent = true, desc = 'Hover' })
 
 vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
 vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = 'Error: Go to [N]ext diagnostic' })
@@ -717,8 +719,8 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
       vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]ecent Files' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Resume ("." for repeat)' })
+      vim.keymap.set('n', '<leader>sr', builtin.oldfiles, { desc = '[S]earch [R]ecent Files' })
+      vim.keymap.set('n', '<leader>s.', builtin.resume, { desc = '[S]earch Resume ("." for repeat)' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
       -- Slightly advanced example of overriding default behavior and theme
@@ -962,7 +964,7 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = { disable = { 'missing-fields', 'duplicate-set-field' }, globals = { 'Snacks' } },
             },
           },
         },
@@ -1422,7 +1424,7 @@ require('lazy').setup({
         command_palette = true, -- position the cmdline and popupmenu together
         long_message_to_split = true, -- long messages will be sent to a split
         inc_rename = false, -- enables an input dialog for inc-rename.nvim
-        lsp_doc_border = false, -- add a border to hover docs and signature help
+        lsp_doc_border = true, -- add a border to hover docs and signature help
       },
       routes = {
         { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
