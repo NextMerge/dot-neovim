@@ -1191,6 +1191,7 @@ require('lazy').setup({
             c = function(fallback)
               if cmp.visible() then
                 cmp.confirm({ select = true })
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<CR>', true, false, true), 'n', true)
               else
                 fallback()
               end
