@@ -1045,7 +1045,7 @@ require('lazy').setup({
 
   { -- Autocompletion
     'hrsh7th/nvim-cmp',
-    event = 'InsertEnter',
+    event = { 'InsertEnter', 'CmdlineEnter' },
     dependencies = {
       -- Snippet Engine & its associated nvim-cmp source
       {
@@ -1166,7 +1166,37 @@ require('lazy').setup({
 
       -- Completion for command mode
       cmp.setup.cmdline(':', {
-        mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmp.mapping.preset.cmdline({
+          ['<C-n>'] = cmp.config.disable,
+          ['<C-p>'] = cmp.config.disable,
+          ['<C-f>'] = {
+            c = function(fallback)
+              if cmp.visible() then
+                cmp.select_next_item()
+              else
+                fallback()
+              end
+            end,
+          },
+          ['<C-b>'] = {
+            c = function(fallback)
+              if cmp.visible() then
+                cmp.select_prev_item()
+              else
+                fallback()
+              end
+            end,
+          },
+          ['<CR>'] = {
+            c = function(fallback)
+              if cmp.visible() then
+                cmp.confirm({ select = true })
+              else
+                fallback()
+              end
+            end,
+          },
+        }),
         sources = cmp.config.sources({
           { name = 'path' },
         }, {
@@ -1211,7 +1241,7 @@ require('lazy').setup({
       integrations = {
         mason = true,
         leap = true,
-        noice = false,
+        noice = true,
         copilot_vim = true,
         snacks = true,
         lsp_trouble = true,
