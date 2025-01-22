@@ -233,12 +233,6 @@ vim.keymap.set('n', '<leader>h', function()
 end, { silent = true, desc = 'Hover' })
 
 vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
-vim.keymap.set('n', '<leader>en', vim.diagnostic.goto_next, { desc = 'Error: Go to [N]ext diagnostic' })
-vim.keymap.set('n', '<leader>ep', vim.diagnostic.goto_prev, { desc = 'Error: Go to [P]revious diagnostic' })
-
-vim.keymap.set('n', '<leader>pv', function()
-  vim.cmd('Ex')
-end, { silent = true, desc = 'Project [V]iew' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -831,7 +825,7 @@ require('lazy').setup({
           map('gd', require('telescope.builtin').lsp_definitions, '[G]oto [D]efinition')
 
           -- Find references for the word under your cursor.
-          map('gr', require('telescope.builtin').lsp_references, '[G]oto [R]eferences')
+          map('<leader>cf', require('telescope.builtin').lsp_references, 'Show [C]ode [R]eferences')
 
           -- Jump to the implementation of the word under your cursor.
           --  Useful when your language has ways of declaring types without an actual implementation.
@@ -870,7 +864,7 @@ require('lazy').setup({
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
-          map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
+          -- map('gD', vim.lsp.buf.declaration, '[G]oto [D]eclaration')
         end,
       })
 
@@ -1338,15 +1332,22 @@ require('lazy').setup({
         return filetype
       end
 
+      -- ... and there is more!
+      --  Check out: https://github.com/echasnovski/mini.nvim
+      require('mini.operators').setup()
+      require('mini.pairs').setup()
+
+      local mini_files = require('mini.files')
+      mini_files.setup()
+      vim.keymap.set('n', '<leader>pv', function()
+        mini_files.open()
+      end, { silent = true, desc = 'Project [V]iew' })
+
       -- Indentation guides for current scope
       local indent_scope = require('mini.indentscope')
       indent_scope.setup({
         draw = { delay = 0, animation = indent_scope.gen_animation.none() },
       })
-
-      -- ... and there is more!
-      --  Check out: https://github.com/echasnovski/mini.nvim
-      require('mini.pairs').setup()
     end,
   },
   { -- Highlight, edit, and navigate code
