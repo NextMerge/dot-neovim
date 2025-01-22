@@ -1102,13 +1102,17 @@ require('lazy').setup({
         -- No, but seriously. Please read `:help ins-completion`, it is really good!
         mapping = cmp.mapping.preset.insert({
           -- Select the [n]ext item
-          ['<C-n>'] = cmp.mapping.select_next_item(),
+          ['<C-f>'] = cmp.mapping.select_next_item(),
           -- Select the [p]revious item
-          ['<C-p>'] = cmp.mapping.select_prev_item(),
+          ['<C-b>'] = cmp.mapping.select_prev_item(),
+
+          ['<C-n>'] = cmp.config.disable,
+          ['<C-p>'] = cmp.config.disable,
 
           -- Scroll the documentation window [b]ack / [f]orward
-          ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-          ['<C-f>'] = cmp.mapping.scroll_docs(4),
+          -- For some reason this breaks with reactive.nvim
+          -- ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+          -- ['<C-f>'] = cmp.mapping.scroll_docs(4),
 
           -- Accept ([y]es) the completion.
           --  This will auto-import if your LSP supports it.
@@ -1117,7 +1121,7 @@ require('lazy').setup({
 
           -- If you prefer more traditional completion keymaps,
           -- you can uncomment the following lines
-          --['<CR>'] = cmp.mapping.confirm { select = true },
+          ['<CR>'] = cmp.mapping.confirm({ select = true }),
           --['<Tab>'] = cmp.mapping.select_next_item(),
           --['<S-Tab>'] = cmp.mapping.select_prev_item(),
 
@@ -1311,6 +1315,7 @@ require('lazy').setup({
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
+      require('mini.pairs').setup()
     end,
   },
   { -- Highlight, edit, and navigate code
@@ -1361,7 +1366,7 @@ require('lazy').setup({
   require('kickstart.plugins.debug'),
   -- require 'kickstart.plugins.indent_line',
   -- require('kickstart.plugins.lint'),
-  require('kickstart.plugins.autopairs'),
+  -- require('kickstart.plugins.autopairs'),
   -- require 'kickstart.plugins.neo-tree',
   require('kickstart.plugins.gitsigns'), -- adds gitsigns recommend keymaps
 
@@ -1391,8 +1396,8 @@ require('lazy').setup({
           auto_trigger = true,
           hide_during_completion = false,
           keymap = {
-            accept = '<C-]>',
-            dismiss = '<C-[>',
+            accept = '<C-n>',
+            dismiss = '<C-p>',
           },
         },
       })
