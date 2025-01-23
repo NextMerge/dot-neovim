@@ -246,8 +246,6 @@ vim.keymap.set('n', '<leader>ox', function()
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
 
-vim.keymap.set({ 'n', 'x' }, '<C-]>', '<Nop>', { silent = true })
-
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
@@ -1369,6 +1367,11 @@ require('lazy').setup({
       indent = { enable = true, disable = { 'ruby' } },
       incremental_selection = {
         enable = true,
+        keymaps = {
+          node_incremental = '<CR>',
+          node_decremental = '<BS>',
+          scope_incremental = '<S-CR>',
+        },
       },
     },
     -- There are additional nvim-treesitter modules that you can use to interact
@@ -1585,7 +1588,7 @@ require('lazy').setup({
   },
   {
     'folke/trouble.nvim',
-    opts = {}, -- for default options, refer to the configuration section for custom setup.
+    opts = {},
     cmd = 'Trouble',
     keys = {
       {
