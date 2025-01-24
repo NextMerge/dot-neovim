@@ -232,7 +232,7 @@ vim.keymap.set('n', '<leader>h', function()
   return vim.lsp.buf.hover() -- Define hover like this so that noice.nvim can inject its own window style
 end, { silent = true, desc = 'Hover' })
 
-vim.keymap.set('n', '<leader>eh', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
 
 vim.keymap.set('n', '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -552,7 +552,6 @@ require('lazy').setup({
       spec = {
         { '<leader>c', group = 'Code' },
         { '<leader>d', group = 'Document' },
-        { '<leader>e', group = 'Error' },
         { '<leader>s', group = 'Search' },
         { '<leader>p', group = 'Project' },
         { '<leader>t', group = 'Toggle' },
@@ -1130,12 +1129,12 @@ require('lazy').setup({
           --
           -- <c-l> will move you to the right of each of the expansion locations.
           -- <c-h> is similar, except moving you backwards.
-          ['<C-l>'] = cmp.mapping(function()
+          ['<C-Right>'] = cmp.mapping(function()
             if luasnip.expand_or_locally_jumpable() then
               luasnip.expand_or_jump()
             end
           end, { 'i', 's' }),
-          ['<C-h>'] = cmp.mapping(function()
+          ['<C-Left>'] = cmp.mapping(function()
             if luasnip.locally_jumpable(-1) then
               luasnip.jump(-1)
             end
@@ -1336,7 +1335,17 @@ require('lazy').setup({
       require('mini.pairs').setup()
 
       local mini_files = require('mini.files')
-      mini_files.setup()
+      mini_files.setup({
+        mappings = {
+          go_in = '<CR>',
+          go_in_plus = '<S-CR>',
+          go_out = '<BS>',
+          go_out_plus = '<S-BS>',
+          mark_goto = '',
+          mark_set = '',
+          reset = '<Del>',
+        },
+      })
       vim.keymap.set('n', '<leader>pv', function()
         mini_files.open()
       end, { silent = true, desc = 'Project [V]iew' })
