@@ -156,18 +156,7 @@ vim.opt.cursorline = true
 -- Minimal number of screen lines to keep above and below the cursor.
 vim.opt.scrolloff = 10
 
-function vim.getVisualSelection()
-  vim.cmd('noau normal! "vy"')
-  local text = vim.fn.getreg('v')
-  vim.fn.setreg('v', {})
-
-  text = string.gsub(text, '\n', '')
-  if #text > 0 then
-    return text
-  else
-    return ''
-  end
-end
+vim.opt.shell = 'fish'
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
