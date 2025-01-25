@@ -456,6 +456,14 @@ require('lazy').setup({
           Snacks.toggle.inlay_hints():map('<leader>uh')
         end,
       })
+
+      -- Run rename whenever mini.files renames a file
+      vim.api.nvim_create_autocmd('User', {
+        pattern = 'MiniFilesActionRename',
+        callback = function(event)
+          Snacks.rename.on_rename_file(event.data.from, event.data.to)
+        end,
+      })
     end,
   },
 
