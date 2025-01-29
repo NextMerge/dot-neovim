@@ -235,6 +235,16 @@ vim.keymap.set('n', '<leader>ox', function()
   ))
 end, { desc = '[O]pen E[x]ternal editor' })
 
+local function fileIsFishCLI()
+  -- check that the opened file ends with "/tmp.*.fish"
+  local file = vim.fn.expand('%:p')
+  return string.match(file, '/tmp.*%.fish$')
+end
+
+if fileIsFishCLI() then
+  vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
+end
+
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
 
