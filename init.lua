@@ -1344,17 +1344,15 @@ require('lazy').setup({
       local mini_files = require('mini.files')
       mini_files.setup({
         mappings = {
-          go_in = '<CR>',
-          go_in_plus = '<S-CR>',
-          go_out = '<BS>',
-          go_out_plus = '<S-BS>',
+          go_in_plus = '<CR>',
+          go_out_plus = '<BS>',
           mark_goto = '',
           mark_set = '',
           reset = '<Del>',
         },
       })
       vim.keymap.set('n', '<leader>pv', function()
-        mini_files.open()
+        mini_files.open(vim.api.nvim_buf_get_name(0), false)
       end, { silent = true, desc = 'Project [V]iew' })
 
       -- Indentation guides for current scope
