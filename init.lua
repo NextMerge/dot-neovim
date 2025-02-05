@@ -191,12 +191,21 @@ vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Swap around some keys
+-- Better macro keys
+--
+-- <C-@> to start/stop recording a macro
+vim.keymap.set('n', '<C-@>', 'q', { desc = 'Start/Stop recording a macro' })
+-- z to replay the macro
+vim.keymap.set('n', 'z', '@', { desc = 'Replay recorded macro' })
+
+-- Move some stuff from z to q such as quitting
 vim.keymap.set('n', 'q', 'z')
-vim.keymap.set('n', 'z', 'q')
-vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
 vim.keymap.set({ 'n', 'x' }, 'Q', '<Nop>')
 vim.keymap.set({ 'n', 'x' }, 'QQ', 'ZZ', { desc = 'Save and quit' })
+
+-- Swap " and :
+vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
+vim.keymap.set({ 'n', 'x' }, ':', '"')
 
 vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
 vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
