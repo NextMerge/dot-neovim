@@ -1045,6 +1045,7 @@ require('lazy').setup({
         json = { 'prettierd', 'prettier', stop_after_first = true },
         zsh = { 'shfmt' },
         sh = { 'shfmt' },
+        fish = { 'fish_indent' },
         css = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
