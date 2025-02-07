@@ -191,17 +191,10 @@ vim.keymap.set('n', '<C-Right>', '<C-w><C-l>', { desc = 'Move focus to the right
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
 
--- Better macro keys
---
--- <C-@> to start/stop recording a macro
 vim.keymap.set('n', '<C-@>', 'q', { desc = 'Start/Stop recording a macro' })
--- z to replay the macro
-vim.keymap.set('n', 'z', '@', { desc = 'Replay recorded macro' })
+vim.keymap.set('n', 'q', '<Nop>')
 
--- Move some stuff from z to q such as quitting
-vim.keymap.set('n', 'q', 'z')
-vim.keymap.set({ 'n', 'x' }, 'Q', '<Nop>')
-vim.keymap.set({ 'n', 'x' }, 'QQ', 'ZZ', { desc = 'Save and quit' })
+vim.keymap.set({ 'n', 'x' }, '<C-q>', 'ZZ', { desc = 'Save and quit' })
 
 -- Swap " and :
 vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
@@ -583,6 +576,7 @@ require('lazy').setup({
         { ']', mode = { 'n', 'x' } },
         { '[', mode = { 'n', 'x' } },
         { '<C-w>', mode = { 'n' } },
+        { 'sd', mode = { 'n', 'x' } },
       },
     },
   },
@@ -666,12 +660,12 @@ require('lazy').setup({
       require('telescope').setup({
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
-        --
-        -- defaults = {
-        --   mappings = {
-        --     i = { ['<c-enter>'] = 'to_fuzzy_refine' },
-        --   },
-        -- },
+
+        defaults = {
+          mappings = {
+            i = { ['<esc>'] = 'close', ['<C-c>'] = { '<esc>', type = 'command' } },
+          },
+        },
         pickers = {
           find_files = {
             path_display = filenameFirst,
@@ -703,6 +697,14 @@ require('lazy').setup({
           oldfiles = {
             path_display = filenameFirst,
             cwd_only = true,
+          },
+          buffers = {
+            cwd_only = true,
+          },
+          help_tags = {
+            mappings = {
+              i = { ['<CR>'] = 'select_tab' },
+            },
           },
         },
         extensions = {
@@ -1350,6 +1352,9 @@ require('lazy').setup({
       --  Check out: https://github.com/echasnovski/mini.nvim
       require('mini.operators').setup()
       require('mini.pairs').setup()
+      require('mini.bracketed').setup({
+        comment = { suffix = '' },
+      })
 
       local mini_files = require('mini.files')
       mini_files.setup({
@@ -1597,7 +1602,7 @@ require('lazy').setup({
   { -- File bookmark
     'cbochs/grapple.nvim',
     dependencies = {
-      { 'nvim-tree/nvim-web-devicons', lazy = true },
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
     },
     event = { 'BufReadPost', 'BufNewFile' },
     cmd = 'Grapple',
@@ -1610,7 +1615,7 @@ require('lazy').setup({
       { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
     },
   },
-  {
+  { -- LSP diagnostics and symbols
     'folke/trouble.nvim',
     opts = {},
     cmd = 'Trouble',
@@ -1648,10 +1653,32 @@ require('lazy').setup({
     },
   },
   { 'dmmulroy/tsc.nvim', cmd = 'TSC', opts = {} },
-  {
+  { -- Line highlighting depending on current mode
     'rasulomaroff/reactive.nvim',
     opts = {
       load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
+    },
+  },
+  { -- Frequency and recency based buffer picker
+    'dzfrias/arena.nvim',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+    },
+    event = 'BufWinEnter',
+    keys = {
+      {
+        '<leader>a',
+        function()
+          require('arena').toggle()
+        end,
+        desc = 'Toggle Arena Buffer',
+      },
+    },
+    opts = {
+      buf_opts = {
+        ['relativenumber'] = false,
+      },
+      devicons = vim.g.have_nerd_font,
     },
   },
 }, {
