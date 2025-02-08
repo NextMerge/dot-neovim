@@ -193,6 +193,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 vim.keymap.set('n', '<C-@>', 'q', { desc = 'Start/Stop recording a macro' })
 vim.keymap.set('n', 'q', '<Nop>')
+vim.keymap.set('n', 'Q', '<Nop>')
 
 vim.keymap.set({ 'n', 'x' }, '<C-q>', 'ZZ', { desc = 'Save and quit' })
 
@@ -219,9 +220,9 @@ vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank [F]i
 vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute [F]ilepath' })
 vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank [D]irectory' })
 
-vim.keymap.set('n', '<leader>h', function()
+vim.keymap.set('n', '<leader>ch', function()
   return vim.lsp.buf.hover() -- Define hover like this so that noice.nvim can inject its own window style
-end, { silent = true, desc = 'Hover' })
+end, { silent = true, desc = 'Code: [H]over' })
 
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Error: [H]over diagnostic' })
 
@@ -516,6 +517,7 @@ require('lazy').setup({
       -- delay between pressing a key and opening which-key (milliseconds)
       -- this setting is independent of vim.opt.timeoutlen
       delay = 0,
+      preset = 'helix',
       keys = {
         scroll_down = '<PageDown>',
         scroll_up = '<PageUp>',
@@ -575,8 +577,7 @@ require('lazy').setup({
         { 'g', mode = { 'n', 'x' } },
         { ']', mode = { 'n', 'x' } },
         { '[', mode = { 'n', 'x' } },
-        { '<C-w>', mode = { 'n' } },
-        { 'sd', mode = { 'n', 'x' } },
+        { '<C-w>', mode = { 'n', 'x' } },
       },
     },
   },
@@ -590,7 +591,7 @@ require('lazy').setup({
 
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     branch = '0.1.x',
     dependencies = {
       'nvim-lua/plenary.nvim',
@@ -777,6 +778,7 @@ require('lazy').setup({
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
+    event = 'VeryLazy',
     dependencies = {
       -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
@@ -1264,13 +1266,14 @@ require('lazy').setup({
   -- Highlight todo, notes, etc in comments
   {
     'folke/todo-comments.nvim',
-    event = 'VimEnter',
+    event = 'VeryLazy',
     dependencies = { 'nvim-lua/plenary.nvim' },
     opts = { signs = false },
   },
 
   { -- Collection of various small independent plugins/modules
     'echasnovski/mini.nvim',
+    event = 'VeryLazy',
     config = function()
       -- Better Around/Inside textobjects
       --
@@ -1379,6 +1382,7 @@ require('lazy').setup({
   },
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
+    event = "VeryLazy",
     build = ':TSUpdate',
     main = 'nvim-treesitter.configs', -- Sets main module to use for opts
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter`
@@ -1412,6 +1416,7 @@ require('lazy').setup({
   },
   { -- Sticky context on scroll
     'nvim-treesitter/nvim-treesitter-context',
+    event = 'VeryLazy',
     opts = {
       max_lines = 10,
       multiline_threshold = 3,
@@ -1445,11 +1450,6 @@ require('lazy').setup({
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
   -- you can continue same window with `<space>sr` which resumes last telescope search
 
-  { -- Perform linked editing on xml tags
-    'windwp/nvim-ts-autotag',
-    lazy = false,
-    opts = {},
-  },
   { -- AI autocompletion
     'zbirenbaum/copilot.lua',
     cmd = 'Copilot',
@@ -1546,6 +1546,7 @@ require('lazy').setup({
   },
   { -- Customizable terminals
     'akinsho/toggleterm.nvim',
+    event = 'VeryLazy',
     version = '*',
     config = function()
       local on_open = function()
@@ -1655,6 +1656,7 @@ require('lazy').setup({
   { 'dmmulroy/tsc.nvim', cmd = 'TSC', opts = {} },
   { -- Line highlighting depending on current mode
     'rasulomaroff/reactive.nvim',
+    event = 'VeryLazy',
     opts = {
       load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
     },
