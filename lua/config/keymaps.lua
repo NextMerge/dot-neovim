@@ -6,6 +6,9 @@
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 
 -- Overwrites
+vim.keymap.set('n', 'h', '<Nop>', { desc = 'No h' })
+vim.keymap.set('n', 'l', '<Nop>', { desc = 'No l' })
+
 vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
 vim.keymap.set('n', '<C-Right>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
 
