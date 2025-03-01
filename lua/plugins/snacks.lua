@@ -49,6 +49,11 @@ return {
           },
         },
       },
+      scratch = {
+        filekey = {
+          branch = false,
+        },
+      },
     },
   },
 }
