@@ -5,9 +5,11 @@
 -- Overwrites
 vim.g.snacks_animate = false
 
-vim.opt.sidescrolloff = 10
+vim.opt.scrolloff = 10
 
 vim.opt.wrap = true
 
 -- Custom
 vim.opt.shell = 'fish'
+
+vim.g.autoformat = false

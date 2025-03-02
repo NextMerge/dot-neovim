@@ -10,10 +10,15 @@ vim.keymap.set('n', 'h', '<Nop>', { desc = 'No h' })
 vim.keymap.set('n', 'l', '<Nop>', { desc = 'No l' })
 
 vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
-vim.keymap.set('n', '<C-Right>', '<C-w>j', { desc = 'Go to Lower Window', remap = true })
+vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
 
 vim.keymap.set('n', '<C-h>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
+
+vim.keymap.set({ 'n', 'v' }, '<C-s>', function()
+  vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
+  LazyVim.format({ force = true })
+end, { desc = 'Format' })
 
 -- Custom
 vim.keymap.set(
@@ -68,3 +73,9 @@ end
 if fileIsFishCLI() then
   vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
 end
+
+vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next tab' })
+vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Previous tab' })
+vim.keymap.set('n', ']T', '<cmd>tabmove +1<CR>', { desc = 'Move tab right' })
+vim.keymap.set('n', '[T', '<cmd>tabmove -1<CR>', { desc = 'Move tab left' })
+

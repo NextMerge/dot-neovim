@@ -5,13 +5,13 @@ return {
       { '<leader>e', false },
       { '<leader>E', false },
       {
-        '<leader>fR',
+        '<leader>fr',
         function()
           Snacks.picker.recent({ filter = { cwd = true } })
         end,
         desc = 'Recent (cwd)',
       },
-      { '<leader>fr', LazyVim.pick('oldfiles'), desc = 'Recent' },
+      { '<leader>fR', LazyVim.pick('oldfiles'), desc = 'Recent' },
     },
     opts = {
       dashboard = {
@@ -44,6 +44,17 @@ return {
             keys = {
               ['<Esc>'] = { 'close', mode = { 'n', 'i' } },
               ['<C-c>'] = 'cancel',
+            },
+          },
+        },
+        sources = {
+          help = {
+            win = {
+              input = {
+                keys = {
+                  ['<CR>'] = { 'tab', mode = { 'n', 'i' } },
+                },
+              },
             },
           },
         },
@@ -145,6 +156,57 @@ return {
     },
   },
   {
+    'echasnovski/mini.surround',
+    opts = {
+      mappings = {
+        add = '<leader>msa', -- Add surrounding in Normal and Visual modes
+        delete = '<leader>msd', -- Delete surrounding
+        find = '<leader>msf', -- Find surrounding (to the right)
+        find_left = '<leader>msF', -- Find surrounding (to the left)
+        highlight = '<leader>msh', -- Highlight surrounding
+        replace = '<leader>msr', -- Replace surrounding
+        update_n_lines = '<leader>msn', -- Update `n_lines`
+      },
+    },
+    keys = {
+      { '<leader>ms', '', mode = { 'n', 'x' }, desc = '+surround' },
+    },
+  },
+  {
+    'echasnovski/mini.operators',
+    lazy = false,
+    version = '*',
+    opts = {
+      -- Evaluate text and replace with output
+      evaluate = {
+        prefix = '<leader>mo=',
+      },
+
+      -- Exchange text regions
+      exchange = {
+        prefix = '<leader>mox',
+      },
+
+      -- Multiply (duplicate) text
+      multiply = {
+        prefix = '<leader>mom',
+      },
+
+      -- Replace text with register
+      replace = {
+        prefix = '<leader>mor',
+      },
+
+      -- Sort text
+      sort = {
+        prefix = '<leader>mos',
+      },
+    },
+    keys = {
+      { '<leader>mo', '', mode = { 'n', 'x' }, desc = '+operators' },
+    },
+  },
+  {
     'nvim-treesitter/nvim-treesitter-context',
     opts = function()
       local tsc = require('treesitter-context')
@@ -160,9 +222,9 @@ return {
         end,
       }):map('<leader>ut')
 
-      vim.keymap.set('n', '<leader>cu', function()
+      vim.keymap.set('n', '<leader>tc', function()
         tsc.go_to_context(vim.v.count1)
-      end, { silent = true, desc = 'Go [U]p Treesitter Context' })
+      end, { silent = true, desc = 'Go up Treesitter Code [C]ontext' })
 
       return { mode = 'cursor', max_lines = 3 }
     end,
@@ -171,6 +233,60 @@ return {
     'folke/which-key.nvim',
     opts = {
       delay = 0,
+      keys = {
+        scroll_down = '<PageDown>',
+        scroll_up = '<PageUp>',
+      },
+      spec = {
+        {
+          mode = { 'n', 'v' },
+          { '<leader>m', group = '+mini' },
+          { '<leader>t', group = '+treesitter' },
+          { '<leader>h', group = '+gitsigns' },
+        },
+        {
+          mode = 'x',
+          {'<leader>d', '[D]elete without writing to the copy register'},
+        },
+      },
+    },
+  },
+  {
+    'CopilotC-Nvim/CopilotChat.nvim',
+    opts = {
+      mappings = {
+        close = {
+          insert = '<Esc>',
+        },
+      },
+    },
+  },
+  {
+    'akinsho/bufferline.nvim',
+    enabled = false,
+  },
+  {
+    'folke/todo-comments.nvim',
+    enabled = false,
+  },
+
+  -- New plugins
+
+  { -- Autosave
+    'okuuva/auto-save.nvim',
+    cmd = 'ASToggle', -- optional for lazy loading on command
+    event = { 'InsertLeave', 'TextChanged' }, -- optional for lazy loading on trigger events
+    opts = {
+      trigger_events = {
+        cancel_deferred_save = { 'InsertEnter', { 'User', pattern = 'ConformStart' } },
+      },
+    },
+  },
+  { -- Line highlighting depending on current mode
+    'rasulomaroff/reactive.nvim',
+    event = 'VeryLazy',
+    opts = {
+      load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
     },
   },
 }
