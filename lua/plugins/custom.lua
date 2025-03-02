@@ -262,11 +262,27 @@ return {
     },
   },
   {
-
     'nvim-lualine/lualine.nvim',
     opts = {
       sections = {
         lualine_z = {},
+      },
+    },
+  },
+  {
+    'folke/noice.nvim',
+    opts = {
+      routes = {
+        {
+          -- Hide error spam every time autocomplete is triggered
+          filter = {
+            error = true,
+            find = '.*blink.cmp.*reactive.nvim.*',
+          },
+          opts = {
+            skip = true,
+          },
+        },
       },
     },
   },
