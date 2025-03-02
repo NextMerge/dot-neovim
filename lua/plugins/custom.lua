@@ -224,7 +224,7 @@ return {
 
       vim.keymap.set('n', '<leader>tc', function()
         tsc.go_to_context(vim.v.count1)
-      end, { silent = true, desc = 'Go up Treesitter Code [C]ontext' })
+      end, { silent = true, desc = 'Go up Treesitter Code Context' })
 
       return { mode = 'cursor', max_lines = 3 }
     end,
@@ -241,12 +241,12 @@ return {
         {
           mode = { 'n', 'v' },
           { '<leader>m', group = '+mini' },
-          { '<leader>t', group = '+treesitter' },
+          { '<leader>t', group = '+tab/treesitter' },
           { '<leader>h', group = '+gitsigns' },
         },
         {
           mode = 'x',
-          {'<leader>d', '[D]elete without writing to the copy register'},
+          { '<leader>d', 'Delete without writing to the copy register' },
         },
       },
     },
@@ -258,6 +258,15 @@ return {
         close = {
           insert = '<Esc>',
         },
+      },
+    },
+  },
+  {
+
+    'nvim-lualine/lualine.nvim',
+    opts = {
+      sections = {
+        lualine_z = {},
       },
     },
   },

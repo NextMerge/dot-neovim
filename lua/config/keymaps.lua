@@ -25,9 +25,9 @@ vim.keymap.set(
   'x',
   '<leader>p',
   '"_dP',
-  { desc = "[P]aste over highlighted text but don't overwrite the copy register" }
+  { desc = "Paste over highlighted text but don't overwrite the copy register" }
 )
-vim.keymap.set('x', '<leader>d', [["_d]], { desc = '[D]elete without writing to the copy register' })
+vim.keymap.set('x', '<leader>d', [["_d]], { desc = 'Delete without writing to the copy register' })
 vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
 vim.keymap.set('n', '<C-@>', 'q', { desc = 'Start/Stop recording a macro' })
@@ -39,8 +39,8 @@ vim.keymap.set({ 'n', 'x' }, '<C-q>', 'ZZ', { desc = 'Save and quit' })
 vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
 vim.keymap.set({ 'n', 'x' }, ':', '"')
 
-vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Move down and center screen on cursor' })
-vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Move up and center screen on cursor' })
+vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Scroll down and center screen on cursor' })
+vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Scroll up and center screen on cursor' })
 
 vim.keymap.set('x', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
 vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
@@ -48,11 +48,11 @@ vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line'
 vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
 vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank [F]ilepath' })
-vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute [F]ilepath' })
-vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank [D]irectory' })
+vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank filepath' })
+vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute filepath' })
+vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank directory' })
 
-vim.keymap.set('n', '<leader>ox', function()
+vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
   local escaped_path = vim.fn.shellescape(vim.fn.expand('%:p'))
   vim.cmd(string.format(
@@ -62,7 +62,7 @@ vim.keymap.set('n', '<leader>ox', function()
     r,
     c + 1 -- Add 1 to convert from 0-indexed to 1-indexed
   ))
-end, { desc = '[O]pen E[x]ternal editor' })
+end, { desc = 'Open External editor' })
 
 local function fileIsFishCLI()
   -- check that the opened file ends with "/tmp.*.fish"
@@ -78,4 +78,5 @@ vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next tab' })
 vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Previous tab' })
 vim.keymap.set('n', ']T', '<cmd>tabmove +1<CR>', { desc = 'Move tab right' })
 vim.keymap.set('n', '[T', '<cmd>tabmove -1<CR>', { desc = 'Move tab left' })
-
+vim.keymap.set('n', '<leader>tn', ':tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+vim.keymap.set('n', '<leader>td', ':tabclose<CR>', { desc = 'Close tab' })
