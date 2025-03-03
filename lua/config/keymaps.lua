@@ -21,23 +21,13 @@ vim.keymap.set({ 'n', 'v' }, '<C-s>', function()
 end, { desc = 'Format' })
 
 -- Custom
-vim.keymap.set(
-  'x',
-  '<leader>p',
-  '"_dP',
-  { desc = "Paste over highlighted text but don't overwrite the copy register" }
-)
+vim.keymap.set('x', '<leader>p', '"_dP', { desc = "Paste over highlighted text but don't overwrite the copy register" })
 vim.keymap.set('x', '<leader>d', [["_d]], { desc = 'Delete without writing to the copy register' })
 vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
-vim.keymap.set('n', '<C-@>', 'q', { desc = 'Start/Stop recording a macro' })
 vim.keymap.set('n', 'q', '<Nop>')
+vim.keymap.set('n', '<C-q>', 'q', { desc = 'Start/Stop recording a macro' })
 vim.keymap.set('n', 'Q', '<Nop>')
-
-vim.keymap.set({ 'n', 'x' }, '<C-q>', 'ZZ', { desc = 'Save and quit' })
-
-vim.keymap.set({ 'n', 'x' }, '"', ':', { desc = 'Command Prompt' })
-vim.keymap.set({ 'n', 'x' }, ':', '"')
 
 vim.keymap.set({ 'n', 'x' }, '<C-d>', '<C-d>zz', { desc = 'Scroll down and center screen on cursor' })
 vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Scroll up and center screen on cursor' })
@@ -76,7 +66,8 @@ end
 
 vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next tab' })
 vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Previous tab' })
-vim.keymap.set('n', ']T', '<cmd>tabmove +1<CR>', { desc = 'Move tab right' })
-vim.keymap.set('n', '[T', '<cmd>tabmove -1<CR>', { desc = 'Move tab left' })
-vim.keymap.set('n', '<leader>tn', ':tabnew %<CR>', { desc = 'Open current buffer in new tab' })
-vim.keymap.set('n', '<leader>td', ':tabclose<CR>', { desc = 'Close tab' })
+vim.keymap.set('n', ']T', '<cmd>tabmove +<count><CR>', { desc = 'Move tab right' })
+vim.keymap.set('n', '[T', '<cmd>tabmove -<count><CR>', { desc = 'Move tab left' })
+vim.keymap.set('n', '<leader>tt', ':tabnew %<CR>', { desc = 'Open current buffer in new tab' })
+vim.keymap.set('n', '<leader>tx', ':tabclose<CR>', { desc = 'Close tab' })
+vim.keymap.set('n', '<leader>to', ':tabo<CR>', { desc = 'Close other tabs' })
