@@ -273,8 +273,7 @@ return {
     'folke/noice.nvim',
     opts = {
       routes = {
-        {
-          -- Hide error spam every time autocomplete is triggered
+        { -- Hide error spam every time autocomplete is triggered
           filter = {
             error = true,
             find = '.*blink.cmp.*reactive.nvim.*',
