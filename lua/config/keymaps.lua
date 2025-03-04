@@ -15,6 +15,9 @@ vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap 
 vim.keymap.set('n', '<C-h>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
+vim.keymap.set('n', '<S-Left>', 'H', { desc = 'Prev Buffer', remap = true })
+vim.keymap.set('n', '<S-Right>', 'L', { desc = 'Next Buffer', remap = true })
+
 vim.keymap.set({ 'n', 'v' }, '<C-s>', function()
   vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
   LazyVim.format({ force = true })

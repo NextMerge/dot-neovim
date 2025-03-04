@@ -159,17 +159,17 @@ return {
     'echasnovski/mini.surround',
     opts = {
       mappings = {
-        add = '<leader>msa', -- Add surrounding in Normal and Visual modes
-        delete = '<leader>msd', -- Delete surrounding
-        find = '<leader>msf', -- Find surrounding (to the right)
-        find_left = '<leader>msF', -- Find surrounding (to the left)
-        highlight = '<leader>msh', -- Highlight surrounding
-        replace = '<leader>msr', -- Replace surrounding
-        update_n_lines = '<leader>msn', -- Update `n_lines`
+        add = 'msa', -- Add surrounding in Normal and Visual modes
+        delete = 'msd', -- Delete surrounding
+        find = 'msf', -- Find surrounding (to the right)
+        find_left = 'msF', -- Find surrounding (to the left)
+        highlight = 'msh', -- Highlight surrounding
+        replace = 'msr', -- Replace surrounding
+        update_n_lines = 'msn', -- Update `n_lines`
       },
     },
     keys = {
-      { '<leader>ms', '', mode = { 'n', 'x' }, desc = '+surround' },
+      { 'ms', '', mode = { 'n', 'x' }, desc = '+surround' },
     },
   },
   {
@@ -179,31 +179,31 @@ return {
     opts = {
       -- Evaluate text and replace with output
       evaluate = {
-        prefix = '<leader>mo=',
+        prefix = 'mo=',
       },
 
       -- Exchange text regions
       exchange = {
-        prefix = '<leader>mox',
+        prefix = 'mox',
       },
 
       -- Multiply (duplicate) text
       multiply = {
-        prefix = '<leader>mom',
+        prefix = 'mom',
       },
 
       -- Replace text with register
       replace = {
-        prefix = '<leader>mor',
+        prefix = 'mor',
       },
 
       -- Sort text
       sort = {
-        prefix = '<leader>mos',
+        prefix = 'mos',
       },
     },
     keys = {
-      { '<leader>mo', '', mode = { 'n', 'x' }, desc = '+operators' },
+      { 'mo', '', mode = { 'n', 'x' }, desc = '+operators' },
     },
   },
   {
@@ -239,15 +239,25 @@ return {
       },
       spec = {
         {
-          mode = { 'n', 'v' },
-          { '<leader>m', group = '+mini' },
+          mode = { 'n', 'x' },
           { '<leader>t', group = '+tab/treesitter' },
           { '<leader>h', group = '+gitsigns' },
+          { 'm', group = '+mini' },
+        },
+        {
+          mode = 'n',
+          { '<leader>y', group = '+yank' },
         },
         {
           mode = 'x',
           { '<leader>d', 'Delete without writing to the copy register' },
         },
+      },
+    },
+    triggers = {
+      { '<auto>', mode = 'nixsotc' },
+      mappings = {
+        { 'm', mode = { 'n', 'x' } },
       },
     },
   },
@@ -259,6 +269,7 @@ return {
           insert = '<Esc>',
         },
       },
+      model = "claude-3.7-sonnet"
     },
   },
   {
@@ -281,6 +292,16 @@ return {
           opts = {
             skip = true,
           },
+        },
+      },
+    },
+  },
+  {
+    'saghen/blink.cmp',
+    opts = {
+      completion = {
+        ghost_text = {
+          enabled = false,
         },
       },
     },
