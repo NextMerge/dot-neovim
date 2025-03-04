@@ -69,6 +69,7 @@ return {
   {
     'lewis6991/gitsigns.nvim',
     opts = {
+      -- Copied from LazyVim source to change mappings
       on_attach = function(buffer)
         local gs = package.loaded.gitsigns
 
@@ -133,14 +134,20 @@ return {
       {
         '<leader>e',
         function()
-          require('mini.files').open(vim.api.nvim_buf_get_name(0), true)
+          local mf = require('mini.files')
+          if not mf.close() then
+            mf.open(vim.api.nvim_buf_get_name(0), true)
+          end
         end,
         desc = 'Open mini.files (Directory of Current File)',
       },
       {
         '<leader>E',
         function()
-          require('mini.files').open(vim.uv.cwd(), true)
+          local mf = require('mini.files')
+          if not mf.close() then
+            mf.open(vim.uv.cwd(), true)
+          end
         end,
         desc = 'Open mini.files (cwd)',
       },
@@ -256,9 +263,7 @@ return {
     },
     triggers = {
       { '<auto>', mode = 'nixsotc' },
-      mappings = {
-        { 'm', mode = { 'n', 'x' } },
-      },
+      { 'm', mode = { 'n', 'x' } },
     },
   },
   {
@@ -269,14 +274,14 @@ return {
           insert = '<Esc>',
         },
       },
-      model = "claude-3.7-sonnet"
+      model = 'claude-3.7-sonnet',
     },
   },
   {
     'nvim-lualine/lualine.nvim',
     opts = {
       sections = {
-        lualine_z = {},
+        lualine_z = { 'grapple' },
       },
     },
   },
@@ -332,6 +337,22 @@ return {
     event = 'VeryLazy',
     opts = {
       load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
+    },
+  },
+  { -- File bookmark
+    'cbochs/grapple.nvim',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons', lazy = true },
+    },
+    event = 'LazyFile',
+    cmd = 'Grapple',
+    opts = {
+      scope = 'cwd',
+      quick_select = 'htnswvcr',
+    },
+    keys = {
+      { '<C-m>', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
+      { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
     },
   },
 }
