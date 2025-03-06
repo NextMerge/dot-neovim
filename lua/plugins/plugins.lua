@@ -279,16 +279,27 @@ return {
   },
   {
     'nvim-lualine/lualine.nvim',
-    opts = {
-      sections = {
-        lualine_z = { 'grapple' },
-      },
-    },
+    opts = function(_, opts)
+      table.remove(opts.sections.lualine_c, 5)
+      table.remove(opts.sections.lualine_c, 4)
+      table.insert(opts.sections.lualine_c, 4, { 'filename' })
+
+      opts.sections.lualine_z = { 'grapple' }
+    end,
   },
   {
     'folke/noice.nvim',
     opts = {
       routes = {
+        { -- Prevent say, the tailwind LSP from spamming this when you hover a TypeScript file
+          filter = {
+            event = 'notify',
+            find = 'No information available',
+          },
+          opts = {
+            skip = true,
+          },
+        },
         { -- Hide error spam every time autocomplete is triggered
           filter = {
             error = true,
@@ -348,7 +359,7 @@ return {
     cmd = 'Grapple',
     opts = {
       scope = 'cwd',
-      quick_select = 'htnswvcr',
+      quick_select = 'htnsHTNS',
     },
     keys = {
       { '<C-m>', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
