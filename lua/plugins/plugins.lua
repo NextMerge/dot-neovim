@@ -116,6 +116,7 @@ return {
         leap.opts[k] = v
       end
       leap.add_default_mappings(true)
+      vim.keymap.set({'n', 'x'}, 's', '<Plug>(leap)')
       vim.keymap.del({ 'x', 'o' }, 'x')
       vim.keymap.del({ 'x', 'o' }, 'X')
 
@@ -125,7 +126,7 @@ return {
       -- Define equivalence classes for brackets and quotes, in addition to
       -- the default whitespace group.
       leap.opts.equivalence_classes = { ' \t\r\n', '([{', ')]}', '\'"`' }
-      leap.opts.safe_labels = 'hmnutqfl/SFNLHMUGTQ?'
+      leap.opts.safe_labels = 'hmnutqflz/SFNLHMUGTQ?Z'
     end,
   },
   {
@@ -281,8 +282,6 @@ return {
     'nvim-lualine/lualine.nvim',
     opts = function(_, opts)
       table.remove(opts.sections.lualine_c, 5)
-      table.remove(opts.sections.lualine_c, 4)
-      table.insert(opts.sections.lualine_c, 4, { 'filename' })
 
       opts.sections.lualine_z = { 'grapple' }
     end,
