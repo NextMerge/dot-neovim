@@ -64,6 +64,9 @@ return {
           branch = false,
         },
       },
+      words = {
+        enabled = false,
+      },
     },
   },
   {
@@ -116,7 +119,7 @@ return {
         leap.opts[k] = v
       end
       leap.add_default_mappings(true)
-      vim.keymap.set({'n', 'x'}, 's', '<Plug>(leap)')
+      vim.keymap.set({ 'n', 'x' }, 's', '<Plug>(leap)')
       vim.keymap.del({ 'x', 'o' }, 'x')
       vim.keymap.del({ 'x', 'o' }, 'X')
 
