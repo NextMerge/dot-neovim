@@ -67,12 +67,10 @@ if fileIsFishCLI() then
   vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
 end
 
-vim.keymap.set('n', ']t', '<cmd>tabnext<CR>', { desc = 'Next tab' })
-vim.keymap.set('n', '[t', '<cmd>tabprevious<CR>', { desc = 'Previous tab' })
 vim.keymap.set('n', ']T', '<cmd>tabmove +<count><CR>', { desc = 'Move tab right' })
 vim.keymap.set('n', '[T', '<cmd>tabmove -<count><CR>', { desc = 'Move tab left' })
 vim.keymap.set('n', '<leader>tt', '<cmd>tabnew<CR>', { desc = 'Open empty tab' })
-vim.keymap.set('n', '<leader>tx', '<cmd>tabclose<CR>', { desc = 'Close tab' })
+vim.keymap.set('n', '<leader>tq', '<cmd>tabclose<CR>', { desc = 'Quit tab' })
 vim.keymap.set('n', '<leader>to', '<cmd>tabo<CR>', { desc = 'Close other tabs' })
 
 vim.keymap.set({ 'n', 't' }, '<M-C-S-T>', function()
