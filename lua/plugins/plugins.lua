@@ -281,7 +281,8 @@ return {
   {
     'nvim-lualine/lualine.nvim',
     opts = function(_, opts)
-      table.remove(opts.sections.lualine_c, 5)
+      local currentSymbolIndex = 5
+      table.remove(opts.sections.lualine_c, currentSymbolIndex)
 
       opts.sections.lualine_z = { 'grapple' }
     end,
@@ -294,15 +295,6 @@ return {
           filter = {
             event = 'notify',
             find = 'No information available',
-          },
-          opts = {
-            skip = true,
-          },
-        },
-        { -- Hide error spam every time autocomplete is triggered
-          filter = {
-            error = true,
-            find = '.*blink.cmp.*reactive.nvim.*',
           },
           opts = {
             skip = true,
