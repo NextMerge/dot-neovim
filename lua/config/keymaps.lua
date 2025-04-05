@@ -41,9 +41,9 @@ vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line'
 vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
 vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
 
-vim.keymap.set('n', '<leader>yf', ':let @+=expand("%")<CR>', { desc = 'Yank filepath' })
-vim.keymap.set('n', '<leader>yF', ':let @+=expand("%:p")<CR>', { desc = 'Yank Absolute filepath' })
-vim.keymap.set('n', '<leader>yd', ':let @+=expand("%:p:h")<CR>', { desc = 'Yank directory' })
+vim.keymap.set('n', '<leader>yf', '<cmd>let @+=expand("%:.")<CR>', { desc = 'Yank filepath' })
+vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yank Absolute filepath' })
+vim.keymap.set('n', '<leader>yd', '<cmd>let @+=expand("%:p:h")<CR>', { desc = 'Yank directory' })
 
 vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
