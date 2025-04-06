@@ -37,8 +37,9 @@ vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
 vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
 
 vim.keymap.set('n', '<leader>yf', '<cmd>let @+=expand("%:.")<CR>', { desc = 'Yank filepath' })
-vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yank Absolute filepath' })
-vim.keymap.set('n', '<leader>yd', '<cmd>let @+=expand("%:p:h")<CR>', { desc = 'Yank directory' })
+vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yank absolute filepath' })
+vim.keymap.set('n', '<leader>yd', '<cmd>let @+=expand("%:.:h")<CR>', { desc = 'Yank directory' })
+vim.keymap.set('n', '<leader>yD', '<cmd>let @+=expand("%:p:h")<cr>', { desc = 'yank absolute directory' })
 
 vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
@@ -62,8 +63,15 @@ if fileIsFishCLI() then
   vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
 end
 
-vim.keymap.set('n', ']T', '<cmd>tabmove +<count><CR>', { desc = 'Move tab right' })
-vim.keymap.set('n', '[T', '<cmd>tabmove -<count><CR>', { desc = 'Move tab left' })
+vim.keymap.set('n', ']T', function()
+  local count = vim.v.count > 0 and vim.v.count or 1
+  vim.cmd('tabmove +' .. count)
+end, { desc = 'Move tab right' })
+
+vim.keymap.set('n', '[T', function()
+  local count = vim.v.count > 0 and vim.v.count or 1
+  vim.cmd('tabmove -' .. count)
+end, { desc = 'Move tab left' })
 vim.keymap.set('n', '<leader>tt', '<cmd>tabnew<CR>', { desc = 'Open empty tab' })
 vim.keymap.set('n', '<leader>tq', '<cmd>tabclose<CR>', { desc = 'Quit tab' })
 vim.keymap.set('n', '<leader>to', '<cmd>tabo<CR>', { desc = 'Close other tabs' })
