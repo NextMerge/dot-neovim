@@ -239,6 +239,7 @@ return {
   },
   {
     'folke/which-key.nvim',
+    url = 'https://github.com/NextMerge/which-key.nvim.git',
     opts = {
       delay = 0,
       keys = {
@@ -310,6 +311,20 @@ return {
         ghost_text = {
           enabled = false,
         },
+      },
+    },
+  },
+  {
+    'stevearc/conform.nvim',
+    keys = {
+      {
+        '<C-s>',
+        function()
+          vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
+          LazyVim.format({ force = true })
+        end,
+        mode = { 'n', 'v' },
+        desc = 'Format Injected Langs',
       },
     },
   },

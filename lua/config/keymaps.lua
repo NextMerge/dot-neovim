@@ -18,11 +18,6 @@ vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase W
 vim.keymap.set('n', '<S-Left>', 'H', { desc = 'Prev Buffer', remap = true })
 vim.keymap.set('n', '<S-Right>', 'L', { desc = 'Next Buffer', remap = true })
 
-vim.keymap.set({ 'n', 'v' }, '<C-s>', function()
-  vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
-  LazyVim.format({ force = true })
-end, { desc = 'Format' })
-
 -- Custom
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "Paste over highlighted text but don't overwrite the copy register" })
 vim.keymap.set('x', '<leader>d', [["_d]], { desc = 'Delete without writing to the copy register' })
