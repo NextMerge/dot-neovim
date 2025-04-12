@@ -41,6 +41,21 @@ vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yan
 vim.keymap.set('n', '<leader>yd', '<cmd>let @+=expand("%:.:h")<CR>', { desc = 'Yank directory' })
 vim.keymap.set('n', '<leader>yD', '<cmd>let @+=expand("%:p:h")<cr>', { desc = 'yank absolute directory' })
 
+-- Smart line delete that won't write whitespace lines to the copy register
+_G.smart_delete_init = function()
+  vim.go.operatorfunc = 'v:lua.smart_delete'
+  return 'g@l'
+end
+_G.smart_delete = function()
+  local line = vim.api.nvim_get_current_line()
+  if line:match("^%s*$") then
+    vim.cmd('normal! "_dd')
+  else
+    vim.cmd('normal! dd')
+  end
+end
+vim.keymap.set('n', 'dd', smart_delete_init, { expr = true })
+
 vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))
   local escaped_path = vim.fn.shellescape(vim.fn.expand('%:p'))
