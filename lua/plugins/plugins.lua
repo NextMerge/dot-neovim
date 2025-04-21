@@ -215,6 +215,26 @@ return {
     },
   },
   {
+    'echasnovski/mini.bracketed',
+    version = false,
+    opts = {
+      buffer = { suffix = 'b' },
+      comment = { suffix = '' },
+      conflict = { suffix = 'x' },
+      diagnostic = { suffix = 'd' },
+      file = { suffix = '' },
+      indent = { suffix = '' },
+      jump = { suffix = '' },
+      location = { suffix = '' },
+      oldfile = { suffix = '' },
+      quickfix = { suffix = '' },
+      treesitter = { suffix = '' },
+      undo = { suffix = '' },
+      window = { suffix = '' },
+      yank = { suffix = '' },
+    },
+  },
+  {
     'nvim-treesitter/nvim-treesitter-context',
     opts = function()
       local tsc = require('treesitter-context')
