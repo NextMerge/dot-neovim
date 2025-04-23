@@ -68,13 +68,24 @@ vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   ))
 end, { desc = 'Open External editor' })
 
-local function fileIsFishCLI()
+local function fast_quit()
   -- check that the opened file ends with "/tmp.*.fish"
   local file = vim.fn.expand('%:p')
-  return string.match(file, '/tmp.*%.fish$')
+  local is_fish_cli = string.match(file, '/tmp.*%.fish$')
+  if is_fish_cli then
+    return true
+  end
+
+  -- check if it ends with "*.dump" (Zellij)
+  local is_zellij_dump = string.match(file, '.*%.dump$')
+  if is_zellij_dump then
+    return true
+  end
+
+  return false
 end
 
-if fileIsFishCLI() then
+if fast_quit() then
   vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
 end
 
