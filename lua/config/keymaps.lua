@@ -23,7 +23,7 @@ vim.keymap.set('x', '<leader>p', '"_dP', { desc = "Paste over highlighted text b
 vim.keymap.set('x', '<leader>d', [["_d]], { desc = 'Delete without writing to the copy register' })
 vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
-vim.keymap.set('n', 'q', '<Nop>')
+vim.keymap.set({ 'n', 'x' }, 'q', '<Nop>')
 vim.keymap.set('n', '<C-q>', 'q', { desc = 'Start/Stop recording a macro' })
 vim.keymap.set('n', 'Q', '<Nop>')
 
@@ -48,7 +48,7 @@ _G.smart_delete_init = function()
 end
 _G.smart_delete = function()
   local line = vim.api.nvim_get_current_line()
-  if line:match("^%s*$") then
+  if line:match('^%s*$') then
     vim.cmd('normal! "_dd')
   else
     vim.cmd('normal! dd')

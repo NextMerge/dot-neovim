@@ -235,6 +235,19 @@ return {
     },
   },
   {
+    'echasnovski/mini.ai',
+    opts = {
+      custom_textobjects = {
+        -- JSX attributes
+        j = {
+          {
+            { '[%S^]%s+%w+=%b{}', '^.()%s+%w+={().*()}()' },
+          },
+        },
+      },
+    },
+  },
+  {
     'nvim-treesitter/nvim-treesitter-context',
     opts = function()
       local tsc = require('treesitter-context')
