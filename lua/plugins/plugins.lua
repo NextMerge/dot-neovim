@@ -423,6 +423,9 @@ return {
       discussion_tree = {
         draft_mode = true,
       },
+      create_mr = {
+        delete_branch = true,
+      },
     },
   },
 }
