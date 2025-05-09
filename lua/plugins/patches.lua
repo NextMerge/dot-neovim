@@ -14,6 +14,15 @@ return {
         --     skip = true,
         --   },
         -- },
+        { -- Hide error when toggling gitlab.nvim discussion
+          filter = {
+            error = true,
+            find = 'gitlab.nvim: Could not find Diffview view',
+          },
+          opts = {
+            skip = true,
+          },
+        },
       },
     },
     {

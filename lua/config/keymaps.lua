@@ -20,7 +20,6 @@ vim.keymap.set('n', '<S-Right>', 'L', { desc = 'Next Buffer', remap = true })
 
 -- Custom
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "Paste over highlighted text but don't overwrite the copy register" })
-vim.keymap.set('x', '<leader>d', [["_d]], { desc = 'Delete without writing to the copy register' })
 vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
 vim.keymap.set({ 'n', 'x' }, 'q', '<Nop>')

@@ -14,4 +14,4 @@ vim.opt.shell = 'fish'
 
 vim.g.autoformat = false
 
-vim.opt.iskeyword:append("-") -- grab tailwind classes
+-- vim.opt.iskeyword:append("-") -- grab tailwind classes
