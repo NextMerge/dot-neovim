@@ -8,6 +8,9 @@ vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 -- Overwrites
 vim.keymap.set('n', 'h', '<Nop>', { desc = 'No h' })
 vim.keymap.set('n', 'l', '<Nop>', { desc = 'No l' })
+vim.keymap.set('n', 't', '<Nop>', { desc = 'Nothing' })
+vim.keymap.set('n', 'f', '<Nop>', { desc = 'Nothing' })
+vim.keymap.set('n', 'F', '<Nop>', { desc = 'Nothing' })
 
 vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
 vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
@@ -15,8 +18,8 @@ vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap 
 vim.keymap.set('n', '<C-r>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
-vim.keymap.set('n', '<S-Left>', 'H', { desc = 'Prev Buffer', remap = true })
-vim.keymap.set('n', '<S-Right>', 'L', { desc = 'Next Buffer', remap = true })
+vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { desc = 'Prev Buffer', remap = true })
+vim.keymap.set('n', 'T', '<cmd>bnext<CR>', { desc = 'Next Buffer', remap = true })
 
 -- Custom
 vim.keymap.set('x', '<leader>p', '"_dP', { desc = "Paste over highlighted text but don't overwrite the copy register" })
@@ -85,7 +88,7 @@ local function fast_quit()
 end
 
 if fast_quit() then
-  vim.keymap.set('n', 'q', ':q<CR>', { desc = 'Quit' })
+  vim.keymap.set('n', 'q', '<cmd>q<CR>', { desc = 'Quit' })
 end
 
 vim.keymap.set('n', ']T', function()
