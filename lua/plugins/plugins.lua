@@ -302,17 +302,6 @@ return {
     },
   },
   {
-    'CopilotC-Nvim/CopilotChat.nvim',
-    opts = {
-      mappings = {
-        close = {
-          insert = '<Esc>',
-        },
-      },
-      model = 'claude-3.7-sonnet',
-    },
-  },
-  {
     'nvim-lualine/lualine.nvim',
     opts = function(_, opts)
       local currentSymbolIndex = 5
@@ -401,8 +390,10 @@ return {
       quick_select = 'htnsHTNS',
     },
     keys = {
-      { '<C-m>', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
+      { '<leader>m', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
       { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
+      { '<C-h>', '<cmd>Grapple cycle_tags prev<cr>', desc = 'Grapple cycle previous tag' },
+      { '<C-t>', '<cmd>Grapple cycle_tags next<cr>', desc = 'Grapple cycle next tag' },
     },
   },
   {
