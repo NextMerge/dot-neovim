@@ -340,7 +340,7 @@ return {
     'stevearc/conform.nvim',
     keys = {
       {
-        '<C-s>',
+        "'",
         function()
           vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
           LazyVim.format({ force = true })
@@ -391,9 +391,11 @@ return {
     },
     keys = {
       { '<leader>m', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
-      { "'", '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
-      { '<C-h>', '<cmd>Grapple cycle_tags prev<cr>', desc = 'Grapple cycle previous tag' },
-      { '<C-t>', '<cmd>Grapple cycle_tags next<cr>', desc = 'Grapple cycle next tag' },
+      { '<leader>M', '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
+      { '<c-h>', '<cmd>Grapple select index=1<cr>', desc = 'Select first tag' },
+      { '<c-t>', '<cmd>Grapple select index=2<cr>', desc = 'Select second tag' },
+      { '<c-n>', '<cmd>Grapple select index=3<cr>', desc = 'Select third tag' },
+      { '<c-s>', '<cmd>Grapple select index=4<cr>', desc = 'Select fourth tag' },
     },
   },
   {
@@ -403,7 +405,6 @@ return {
       'MunifTanjim/nui.nvim',
       'nvim-lua/plenary.nvim',
       'sindrets/diffview.nvim',
-      -- 'stevearc/dressing.nvim', -- Recommended but not required. Better UI for pickers.
       'nvim-tree/nvim-web-devicons', -- Recommended but not required. Icons in discussion tree.
     },
     build = function()

@@ -35,8 +35,7 @@ vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Scroll up and center 
 vim.keymap.set('x', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
 vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
 
-vim.keymap.set({ 'n', 'x' }, 'U', '<C-r>', { noremap = true })
-vim.keymap.set({ 'n', 'x' }, '<C-r>', 'U', { noremap = true })
+vim.keymap.set({ 'n', 'x' }, 'U', '<cmd>redo<CR>')
 
 vim.keymap.set('n', '<leader>yf', '<cmd>let @+=expand("%:.")<CR>', { desc = 'Yank filepath' })
 vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yank absolute filepath' })
@@ -100,10 +99,9 @@ vim.keymap.set('n', '[T', function()
   local count = vim.v.count > 0 and vim.v.count or 1
   vim.cmd('tabmove -' .. count)
 end, { desc = 'Move tab left' })
-vim.keymap.set('n', '<leader>tt', '<cmd>tabnew<CR>', { desc = 'Open empty tab' })
-vim.keymap.set('n', '<leader>tq', '<cmd>tabclose<CR>', { desc = 'Quit tab' })
+vim.keymap.set('n', '<leader>tn', '<cmd>tabnew<CR>', { desc = 'New empty tab' })
 vim.keymap.set('n', '<leader>to', '<cmd>tabo<CR>', { desc = 'Close other tabs' })
 
-vim.keymap.set({ 'n', 't' }, '<M-C-S-T>', function()
+vim.keymap.set({ 'n', 't' }, '<C-S-t>', function()
   Snacks.terminal.toggle(nil, { interactive = true, win = { style = 'float' } })
 end, { desc = 'Toggle floating terminal' })
