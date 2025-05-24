@@ -8,7 +8,6 @@ vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 -- Overwrites
 vim.keymap.set('n', 'h', '<Nop>', { desc = 'No h' })
 vim.keymap.set('n', 'l', '<Nop>', { desc = 'No l' })
-vim.keymap.set('n', 't', '<Nop>', { desc = 'Nothing' })
 vim.keymap.set('n', 'f', '<Nop>', { desc = 'Nothing' })
 vim.keymap.set('n', 'F', '<Nop>', { desc = 'Nothing' })
 
