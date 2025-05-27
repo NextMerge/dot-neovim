@@ -345,7 +345,7 @@ return {
           vim.api.nvim_exec_autocmds('User', { pattern = 'ConformStart' })
           LazyVim.format({ force = true })
         end,
-        mode = { 'n', 'v' },
+        mode = { 'n', 'x' },
         desc = 'Format Injected Langs',
       },
     },
