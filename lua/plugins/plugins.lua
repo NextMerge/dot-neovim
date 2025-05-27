@@ -168,6 +168,7 @@ return {
   },
   {
     'echasnovski/mini.surround',
+    vscode = true,
     opts = {
       mappings = {
         add = 'ma', -- Add surrounding in Normal and Visual modes
@@ -182,6 +183,7 @@ return {
   },
   {
     'echasnovski/mini.operators',
+    vscode = true,
     lazy = false,
     version = '*',
     opts = {
