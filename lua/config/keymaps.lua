@@ -14,8 +14,8 @@ vim.keymap.set('n', 'f', '<Nop>', { desc = 'Nothing' })
 vim.keymap.set('n', 'F', '<Nop>', { desc = 'Nothing' })
 vim.keymap.set('n', 'T', '<Nop>', { desc = 'Nothing' })
 
-vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
-vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
+-- vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
+-- vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
 
 vim.keymap.set('n', '<C-r>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
@@ -74,6 +74,9 @@ end
 vim.keymap.set('n', 'dd', smart_delete_init, { expr = true })
 
 if vscode then
+  vim.keymap.set('n', "'", function()
+    vscode.action('editor.action.formatDocument')
+  end, { desc = 'Format document' })
   return
 end
 
