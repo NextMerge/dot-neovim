@@ -12,6 +12,13 @@ return {
         desc = 'Recent (cwd)',
       },
       { '<leader>fR', LazyVim.pick('oldfiles'), desc = 'Recent' },
+      {
+        '<leader><space>',
+        function()
+          Snacks.picker.smart()
+        end,
+        desc = 'Smart Find Files',
+      },
     },
     opts = {
       dashboard = {
@@ -48,6 +55,10 @@ return {
           },
         },
         sources = {
+          smart = {
+            multi = { 'buffers', 'recent', 'files', 'git_files' },
+            filter = { cwd = true },
+          },
           help = {
             win = {
               input = {
