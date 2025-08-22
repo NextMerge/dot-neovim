@@ -8,31 +8,14 @@ local vscode = vim.g.vscode and require('vscode') or nil
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Break out of insert mode' })
 
 -- Overwrites
-vim.keymap.set('n', 'h', '<Nop>', { desc = 'No h' })
-vim.keymap.set('n', 'l', '<Nop>', { desc = 'No l' })
-vim.keymap.set('n', 'f', '<Nop>', { desc = 'Nothing' })
-vim.keymap.set('n', 'F', '<Nop>', { desc = 'Nothing' })
-vim.keymap.set('n', 'T', '<Nop>', { desc = 'Nothing' })
-
--- vim.keymap.set('n', '<C-Left>', '<C-w>h', { desc = 'Go to Left Window', remap = true })
--- vim.keymap.set('n', '<C-Right>', '<C-w>l', { desc = 'Go to Right Window', remap = true })
-
 vim.keymap.set('n', '<C-r>', '<cmd>vertical resize -2<cr>', { desc = 'Decrease Window Width' })
 vim.keymap.set('n', '<C-l>', '<cmd>vertical resize +2<cr>', { desc = 'Increase Window Width' })
 
-if not vscode then
-  vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
-  vim.keymap.set('n', 'T', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
-else
-  vim.keymap.set('n', 'H', function()
-    vscode.action('workbench.action.previousEditor')
-  end, { desc = 'Prev Buffer' })
-  vim.keymap.set('n', 'T', function()
-    vscode.action('workbench.action.nextEditor')
-  end, { desc = 'Next Buffer' })
-end
+vim.keymap.set('n', 'H', '<cmd>bprevious<CR>', { desc = 'Prev Buffer' })
+vim.keymap.set('n', 'T', '<cmd>bnext<CR>', { desc = 'Next Buffer' })
 
 -- Custom
+vim.keymap.set("x", "<leader>p", [["_dP]])
 vim.keymap.set({ 'n', 'x' }, 'x', '"_x', { desc = 'Delete character without copying to register' })
 
 vim.keymap.set({ 'n', 'x' }, 'q', '<Nop>')
@@ -45,13 +28,7 @@ vim.keymap.set({ 'n', 'x' }, '<C-u>', '<C-u>zz', { desc = 'Scroll up and center 
 vim.keymap.set('x', 'J', ":m '>+1<CR>gv=gv", { desc = 'Move selection down a line' })
 vim.keymap.set('x', 'K', ":m '<-2<CR>gv=gv", { desc = 'Move selection up a line' })
 
-if not vscode then
-  vim.keymap.set({ 'n', 'x' }, 'U', '<cmd>redo<CR>')
-else
-  vim.keymap.set({ 'n', 'x' }, 'U', function()
-    vscode.action('redo')
-  end, { desc = 'Redo' })
-end
+vim.keymap.set({ 'n', 'x' }, 'U', '<cmd>redo<CR>')
 
 vim.keymap.set('n', '<leader>yf', '<cmd>let @+=expand("%:.")<CR>', { desc = 'Yank filepath' })
 vim.keymap.set('n', '<leader>yF', '<cmd>let @+=expand("%:p")<CR>', { desc = 'Yank absolute filepath' })
@@ -72,13 +49,6 @@ _G.smart_delete = function()
   end
 end
 vim.keymap.set('n', 'dd', smart_delete_init, { expr = true })
-
-if vscode then
-  vim.keymap.set('n', "'", function()
-    vscode.action('editor.action.formatDocument')
-  end, { desc = 'Format document' })
-  return
-end
 
 vim.keymap.set({ 'n', 'x' }, '<leader>ox', function()
   local r, c = unpack(vim.api.nvim_win_get_cursor(0))

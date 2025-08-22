@@ -81,69 +81,6 @@ return {
     },
   },
   {
-    'lewis6991/gitsigns.nvim',
-    opts = {
-      -- Copied from LazyVim source to change mappings
-      on_attach = function(buffer)
-        local gs = package.loaded.gitsigns
-
-        local function map(mode, l, r, desc)
-          vim.keymap.set(mode, l, r, { buffer = buffer, desc = desc })
-        end
-
-        -- stylua: ignore start
-        map("n", "]h", function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "]c", bang = true })
-          else
-            gs.nav_hunk("next")
-          end
-        end, "Next Hunk")
-        map("n", "[h", function()
-          if vim.wo.diff then
-            vim.cmd.normal({ "[c", bang = true })
-          else
-            gs.nav_hunk("prev")
-          end
-        end, "Prev Hunk")
-        map("n", "]H", function() gs.nav_hunk("last") end, "Last Hunk")
-        map("n", "[H", function() gs.nav_hunk("first") end, "First Hunk")
-        map({ "n", "v" }, "<leader>hs", ":Gitsigns stage_hunk<CR>", "Stage Hunk")
-        map({ "n", "v" }, "<leader>hr", ":Gitsigns reset_hunk<CR>", "Reset Hunk")
-        map("n", "<leader>hS", gs.stage_buffer, "Stage Buffer")
-        map("n", "<leader>hu", gs.undo_stage_hunk, "Undo Stage Hunk")
-        map("n", "<leader>hR", gs.reset_buffer, "Reset Buffer")
-        map("n", "<leader>hp", gs.preview_hunk_inline, "Preview Hunk Inline")
-        map("n", "<leader>hb", function() gs.blame_line({ full = true }) end, "Blame Line")
-        map("n", "<leader>hB", function() gs.blame() end, "Blame Buffer")
-        map("n", "<leader>hd", gs.diffthis, "Diff This")
-        map("n", "<leader>hD", function() gs.diffthis("~") end, "Diff This ~")
-        map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", "GitSigns Select Hunk")
-      end,
-    },
-  },
-  {
-    'ggandor/leap.nvim',
-    config = function(_, opts)
-      local leap = require('leap')
-      for k, v in pairs(opts) do
-        leap.opts[k] = v
-      end
-      leap.add_default_mappings(true)
-      vim.keymap.set({ 'n', 'x' }, 's', '<Plug>(leap)')
-      vim.keymap.del({ 'x', 'o' }, 'x')
-      vim.keymap.del({ 'x', 'o' }, 'X')
-
-      -- Grey out background in Catppuccin
-      vim.api.nvim_set_hl(0, 'LeapBackdrop', { link = 'NonText' })
-
-      -- Define equivalence classes for brackets and quotes, in addition to
-      -- the default whitespace group.
-      leap.opts.equivalence_classes = { ' \t\r\n', '([{', ')]}', '\'"`' }
-      leap.opts.safe_labels = 'hmnutqflz/SFNLHMUGTQ?Z'
-    end,
-  },
-  {
     'echasnovski/mini.files',
     keys = {
       {
@@ -228,26 +165,6 @@ return {
     },
   },
   {
-    'echasnovski/mini.bracketed',
-    version = false,
-    opts = {
-      buffer = { suffix = 'b' },
-      comment = { suffix = '' },
-      conflict = { suffix = 'x' },
-      diagnostic = { suffix = 'd' },
-      file = { suffix = '' },
-      indent = { suffix = '' },
-      jump = { suffix = '' },
-      location = { suffix = '' },
-      oldfile = { suffix = '' },
-      quickfix = { suffix = '' },
-      treesitter = { suffix = '' },
-      undo = { suffix = '' },
-      window = { suffix = '' },
-      yank = { suffix = '' },
-    },
-  },
-  {
     'echasnovski/mini.ai',
     opts = {
       custom_textobjects = {
@@ -258,6 +175,11 @@ return {
             { '[%S^]%s+%w+=%b""', '^.()%s+%w+="().*()"()' },
           },
         },
+        ['-'] = {
+          {
+            '[%s"]()()[%w-:%[%]]+()%s?()"?'
+          }
+        }
       },
     },
   },
@@ -320,8 +242,6 @@ return {
     opts = function(_, opts)
       local currentSymbolIndex = 5
       table.remove(opts.sections.lualine_c, currentSymbolIndex)
-
-      opts.sections.lualine_z = { 'grapple' }
     end,
   },
   {
@@ -396,48 +316,6 @@ return {
     event = 'VeryLazy',
     opts = {
       load = { 'catppuccin-mocha-cursor', 'catppuccin-mocha-cursorline' },
-    },
-  },
-  { -- File bookmark
-    'cbochs/grapple.nvim',
-    dependencies = {
-      { 'nvim-tree/nvim-web-devicons', lazy = true },
-    },
-    event = 'LazyFile',
-    cmd = 'Grapple',
-    opts = {
-      scope = 'cwd',
-      quick_select = 'htnsHTNS',
-    },
-    keys = {
-      { '<leader>m', '<cmd>Grapple toggle<cr>', desc = 'Grapple toggle tag' },
-      { '<leader>M', '<cmd>Grapple toggle_tags<cr>', desc = 'Grapple open tags window' },
-      { '<c-h>', '<cmd>Grapple select index=1<cr>', desc = 'Select first tag' },
-      { '<c-t>', '<cmd>Grapple select index=2<cr>', desc = 'Select second tag' },
-      { '<c-n>', '<cmd>Grapple select index=3<cr>', desc = 'Select third tag' },
-      { '<c-s>', '<cmd>Grapple select index=4<cr>', desc = 'Select fourth tag' },
-    },
-  },
-  {
-    'harrisoncramer/gitlab.nvim',
-    event = 'VeryLazy',
-    dependencies = {
-      'MunifTanjim/nui.nvim',
-      'nvim-lua/plenary.nvim',
-      'sindrets/diffview.nvim',
-      'nvim-tree/nvim-web-devicons', -- Recommended but not required. Icons in discussion tree.
-    },
-    build = function()
-      require('gitlab.server').build(true)
-    end, -- Builds the Go binary
-    opts = {
-      config_path = vim.fn.expand('~') .. '/.config/nvim',
-      discussion_tree = {
-        draft_mode = true,
-      },
-      create_mr = {
-        delete_branch = true,
-      },
     },
   },
   {
